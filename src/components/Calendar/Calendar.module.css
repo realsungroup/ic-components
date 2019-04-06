@@ -1,0 +1,28 @@
+.container {
+  width: auto;
+}
+
+.header {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header :global(.ant-input) {
+  height: 36px;
+  font-size: 16px;
+  border: solid 1px rgb(210, 190, 165);
+  border-radius: 10px;
+  background: transparent;
+  color: #a0917f;
+}
+
+.datePickers {
+  display: flex;
+  align-items: center;
+}
+
+.dateSwitcher {
+  margin-right: 20px;
+}

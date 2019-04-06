@@ -1,0 +1,12 @@
+.container {
+  margin: 0 auto;
+  position: relative;
+}
+
+.week {
+  display: flex;
+}
+
+.week:not(:last-child) {
+  border-bottom: solid 1px rgb(237, 228, 214);
+}

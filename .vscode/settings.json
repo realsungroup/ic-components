@@ -1,0 +1,7 @@
+{
+    "editor.tabSize": 2,
+    "prettier.printWidth": 120,
+    "prettier.trailingComma": "es5",
+    "vetur.format.defaultFormatter.html": "prettier",
+    "prettier.eslintIntegration": true
+}

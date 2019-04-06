@@ -1,0 +1,34 @@
+.container {
+  display: flex;
+  align-items: center;
+  height: 36px;
+  font-size: 16px;
+  color: #a0917f;
+  border: solid 1px rgb(210, 190, 165);
+  border-radius: 10px;
+  padding: 0 4px;
+}
+
+.tab {
+  padding: 0 18px;
+  cursor: pointer;
+}
+
+.tab:not(:first-child) {
+  border-left: solid 1px rgb(210, 190, 165);
+}
+
+.tabActive {
+  border-color: transparent;
+  border-radius: 4px;
+  color: #fff;
+  background: rgb(210, 190, 165);
+}
+
+.tabActive:hover {
+  cursor: default;
+}
+
+.tabActive + .tab {
+  border-color: transparent;
+}
