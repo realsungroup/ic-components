@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 import { getWeeksOfMonth } from '../../utils/dateUtil';
 import styles from './MonthlyCalendarBody.module.css';
 
@@ -33,14 +34,14 @@ export default class MonthlyCalendarBody extends React.PureComponent {
 
   render() {
     const { calendarElement } = this.state;
-    const { date: propDate, dayViewParams, dayViewComponent: DayViewComponent } = this.props;
+    const { className, date: propDate, dayViewParams, dayViewComponent: DayViewComponent } = this.props;
     const year = propDate.getFullYear();
     const month = propDate.getMonth();
     const weeks = getWeeksOfMonth(year, month);
     const dayElementWidth = this.getDayElementWidth();
 
     return (
-      <div className={styles.container} ref={this.rootRef}>
+      <div className={classnames(styles.container, className)} ref={this.rootRef}>
         {weeks.map((week, index) => (
           <div className={styles.week} key={index}>
             {week.map(date => (

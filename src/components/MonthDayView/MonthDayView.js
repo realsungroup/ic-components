@@ -17,12 +17,16 @@ const constructPadding = ({ top, bottom, left, right }) =>
 export default class MonthDayView extends React.PureComponent {
   getEventElementWidth(event) {
     const { dayElementWidth } = this.props;
-    if (isLastDateOfWeek(event.startTime) || !dayElementWidth) {
+    if (!dayElementWidth) {
       return undefined;
     }
 
-    const eventDurationByDay = getEventDuration(event, 'day');
     const { left, right } = dayElementPadding;
+    if (isLastDateOfWeek(event.startTime)) {
+      return dayElementWidth - left - right;
+    }
+
+    const eventDurationByDay = getEventDuration(event, 'day');
     return dayElementWidth * eventDurationByDay - left - right;
   }
 
@@ -33,7 +37,7 @@ export default class MonthDayView extends React.PureComponent {
 
   isTotalDayEvent(event) {
     const { event_time, event_endtime } = event.original;
-    return event_time === '00:00:00' && event_endtime === '23:59:59';
+    return event_time === '00:00' && event_endtime === '23:59';
   }
 
   handleEventClick = event => {
@@ -83,8 +87,8 @@ export default class MonthDayView extends React.PureComponent {
                     this.handleEventClick(event);
                   }}
                 >
-                  <span>{event_title}</span>
-                  {this.isTotalDayEvent(event) && <span className={styles.dot} />}
+                  <div className={styles.eventTitle}>{event_title}</div>
+                  {this.isTotalDayEvent(event) && <div className={styles.dot} />}
                 </div>
               </div>
             );

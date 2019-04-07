@@ -1,0 +1,42 @@
+.flex {
+  display: flex;
+  align-items: center;
+}
+
+.fontStyle {
+  font-size: 16px;
+  color: #a0917f;
+}
+
+.container {
+  width: auto;
+  composes: fontStyle;
+}
+
+.header {
+  composes: flex;
+  justify-content: space-between;
+  padding: 20px 28px;
+}
+
+.dateRange {
+  composes: flex;
+}
+
+.dateRangeLabel {
+  margin-right: 20px;
+}
+
+.headerRightPart :global(.ant-checkbox-wrapper)  {
+  font-size: 16px;
+  color: #a0917f;
+}
+
+.headerRightPart :global(.ant-checkbox-checked) :global(.ant-checkbox-inner) {
+  background: #a0917f;
+  border-color: #a0917f;
+}
+
+.body {
+  margin-top: 4px;
+}

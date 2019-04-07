@@ -1,16 +1,15 @@
 import React from 'react';
 import moment from 'moment';
-import { DatePicker } from 'antd';
-import { allocateDailyEvents } from '../../utils/eventUtil';
-import MonthlyCalendar from '../MonthlyCalendar';
-import MonthDayView from '../MonthDayView';
-import DateSwitcher from '../DateSwitcher';
+import 'moment/locale/zh-cn';
 import Tab from '../Tab';
+import DatePicker from '../DatePicker';
+import DateSwitcher from '../DateSwitcher';
+import ViewContainer from '../ViewContainer';
+import MonthlyCalendar from '../MonthlyCalendar';
+import Agenda from '../Agenda';
 import styles from './Calendar.module.css';
 
 import { mockEvents } from './mockData';
-
-const events = allocateDailyEvents(mockEvents);
 
 const switchStepForMonthly = {
   unit: 'month',
@@ -30,17 +29,20 @@ const tabs = [
 
 export default class Calendar extends React.PureComponent {
   static defaultProps = {
-    defaultActiveTab: 'month',
+    // defaultActiveTab: 'month',
+    defaultActiveTab: 'agenda',
   };
 
   constructor(props) {
     super(props);
 
-    const now = new Date();
+    const now = moment();
     this.state = {
-      datePickerDefaultValue: moment(now),
-      date: now,
+      datePickerDefaultValue: now,
+      date: now.toDate(),
       activeTab: props.defaultActiveTab,
+      defaultAgendaRange: [moment().add(-10, 'days'), moment().add(10, 'days')],
+      events: mockEvents,
     };
   }
 
@@ -60,12 +62,17 @@ export default class Calendar extends React.PureComponent {
     }
   };
 
-  switchTab = key => {
+  handleTabSwitch = key => {
     this.setState({ activeTab: key });
   };
 
+  handleAgendaRangeChange = value => {
+    // alert(`${value[0]} ~ ${value[1]}`);
+    console.log(value);
+  };
+
   render() {
-    const { date, datePickerDefaultValue, activeTab } = this.state;
+    const { date, datePickerDefaultValue, activeTab, defaultAgendaRange, events } = this.state;
     return (
       <div className={styles.container}>
         <div className={styles.header}>
@@ -78,17 +85,24 @@ export default class Calendar extends React.PureComponent {
             />
             <DatePicker defaultValue={datePickerDefaultValue} value={moment(date)} onChange={this.handleDateChange} />
           </div>
-          <Tab onChange={this.switchTab} tabs={tabs} activeKey={activeTab} />
+          <Tab onChange={this.handleTabSwitch} tabs={tabs} activeKey={activeTab} />
         </div>
+
         {activeTab === 'singleDay' && '单日'}
         {activeTab === 'multiDay' && '多日'}
         {activeTab === 'singleWeek' && '单周'}
         {activeTab === 'multiWeek' && '多周'}
         {activeTab === 'month' && (
-          <MonthlyCalendar date={date} dayViewParams={events} dayViewComponent={MonthDayView} />
+          <ViewContainer>
+            <MonthlyCalendar date={date} events={events} />
+          </ViewContainer>
         )}
         {activeTab === 'year' && '年'}
-        {activeTab === 'agenda' && '议程'}
+        {activeTab === 'agenda' && (
+          <ViewContainer>
+            <Agenda defaultRange={defaultAgendaRange} onRangeChange={this.handleAgendaRangeChange} events={events} />
+          </ViewContainer>
+        )}
         {activeTab === 'plan' && '计划'}
       </div>
     );

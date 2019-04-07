@@ -37,5 +37,6 @@ module.exports = {
     'no-shadow': 2,
     'no-param-reassign': 2,
     'react/prop-types': 0,
+    'react/jsx-no-target-blank': 0,
   },
 }

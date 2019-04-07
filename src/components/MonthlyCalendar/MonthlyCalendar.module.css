@@ -1,5 +1,5 @@
-.container {
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0px 8px 8px rgba(0, 0, 0, 0.1);
+.calendarBody {
+  width: auto;
+  /* max-height: calc(100vh - 76px - 41px); */
+  /* overflow-y: auto; */
 }

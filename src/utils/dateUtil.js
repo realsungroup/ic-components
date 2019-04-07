@@ -1,5 +1,6 @@
 import memoizeOne from 'memoize-one';
 import memoize from 'lodash/memoize';
+import moment from 'moment';
 
 /* OFFSET
  * 一周中每天的默认顺序: [0, 1, 2, 3, 4, 5, 6], 0 表示周日
@@ -15,8 +16,10 @@ import memoize from 'lodash/memoize';
  *   getWeekDaysInfo(), getDatesOfPreviousMonthLastWeek(),
  *   getDatesOfNextMonthFirstWeek(), isLastDayOfWeek(), isFirstDayOfWeek(),
  */
-// const OFFSET = 0; // 每周的第一天为“周日”
+// const WEEK_DAY_OFFSET = 0; // 每周的第一天为“周日”
 const WEEK_DAY_OFFSET = -1; // 每周的第一天为“周一”
+
+const DEFAULT_LANGUAGE = 'zh-cn';
 
 export const WEEK_LENGTH = 7;
 export const MILLISECONDS_OF_ONE_DAY = 24 * 60 * 60 * 1000;
@@ -28,7 +31,7 @@ const cyclicMoveWeekDay = memoizeOne((list, offset) => {
       listCopy.unshift(listCopy.pop());
     }
   } else if (offset < 0) {
-    for (let i = (-offset) % 7; i > 0; i--) {
+    for (let i = -offset % 7; i > 0; i--) {
       listCopy.push(listCopy.shift());
     }
   }
@@ -41,37 +44,55 @@ const weekDayIds = [0, 1, 2, 3, 4, 5, 6];
 
 const getWeekDayIdsByOffset = (offset = WEEK_DAY_OFFSET) => cyclicMoveWeekDay(weekDayIds, offset);
 
-export const getWeekDaysInfo = (() => {
-  const labelMaps = {
-    'zh-cn': {
-      0: '周日',
-      1: '周一',
-      2: '周二',
-      3: '周三',
-      4: '周四',
-      5: '周五',
-      6: '周六',
-    },
-    en: {
-      0: 'SUN',
-      1: 'MON',
-      2: 'TUE',
-      3: 'WED',
-      4: 'THU',
-      5: 'FRI',
-      6: 'SAT',
-    },
-  };
+const weekDayNames = {
+  'zh-cn': {
+    0: '周日',
+    1: '周一',
+    2: '周二',
+    3: '周三',
+    4: '周四',
+    5: '周五',
+    6: '周六',
+  },
+  en: {
+    0: 'SUN',
+    1: 'MON',
+    2: 'TUE',
+    3: 'WED',
+    4: 'THU',
+    5: 'FRI',
+    6: 'SAT',
+  },
+};
 
-  return memoize((language = 'zh-cn') => {
-    const defaultLabelMap = labelMaps.en;
-    const localeLabelMap = labelMaps[language] || {};
-    return getWeekDayIdsByOffset().map(id => ({ id, label: localeLabelMap[id] || defaultLabelMap[id] }));
-  });
-})();
+export function getWeekDayName(weekDay, language = DEFAULT_LANGUAGE) {
+  const fallbackWeekDayNames = weekDayNames.en;
+  const localeWeekDayNames = weekDayNames[language] || {};
+  const validWeekDay = typeof weekDay === 'number' ? Math.abs(weekDay) % 7 : weekDay.getDay();
+  return localeWeekDayNames[validWeekDay] || fallbackWeekDayNames[validWeekDay];
+}
+
+export const getWeekDaysInfo = memoize((language = DEFAULT_LANGUAGE) =>
+  getWeekDayIdsByOffset().map(id => ({ id, label: getWeekDayName(id, language) }))
+);
 
 /**
- * 使用条件: offset < 12
+ * @param time {string} 'HH:mm'
+ */
+export function formatHHmmTime(time) {
+  if (!time) {
+    return '';
+  }
+
+  const [hour, minute] = time.split(':');
+  const hour24 = Number(hour);
+  const hour12 = hour24 !== 12 ? hour24 % 12 : hour24;
+  const suffix = hour24 < 12 ? 'am' : 'pm';
+  return `${hour12}:${minute}${suffix}`;
+}
+
+/**
+ * @param offset {number} offset < 12
  */
 export const getMonthByOffset = (year, month, offset) => {
   let accumulatedMonth = month + offset;
@@ -89,12 +110,12 @@ export const getMonthByOffset = (year, month, offset) => {
   return [nextYear, nextMonth];
 };
 
-export const isFirstDateOfWeek = (date) => {
+export const isFirstDateOfWeek = date => {
   const weekDay = date.getDay();
   return getWeekDayIdsByOffset().indexOf(weekDay) === 0;
 };
 
-export const isLastDateOfWeek = (date) => {
+export const isLastDateOfWeek = date => {
   const weekDay = date.getDay();
   return getWeekDayIdsByOffset().indexOf(weekDay) === WEEK_LENGTH - 1;
 };
@@ -108,37 +129,10 @@ export const monthDayHasher = date => {
   return dateCopy.valueOf();
 };
 
-export const isLeapYear = year => {
-  return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
-};
-
 export const isSameMonthDay = (date1, date2) =>
   date1.getDate() === date2.getDate() && date1.getMonth() === date2.getMonth();
 
-export const getLengthOfMonth = (() => {
-  const monthLengthMap = new Map();
-  monthLengthMap.set(0, 31);
-  monthLengthMap.set(2, 31);
-  monthLengthMap.set(3, 30);
-  monthLengthMap.set(4, 31);
-  monthLengthMap.set(5, 30);
-  monthLengthMap.set(6, 31);
-  monthLengthMap.set(7, 31);
-  monthLengthMap.set(8, 30);
-  monthLengthMap.set(9, 31);
-  monthLengthMap.set(10, 30);
-  monthLengthMap.set(11, 31);
-
-  return (year, month) => {
-    if (month === 1) {
-      if (isLeapYear(year)) {
-        return 29;
-      }
-      return 28;
-    }
-    return monthLengthMap.get(month);
-  };
-})();
+export const getLengthOfMonth = (year, month) => moment(new Date(year, month)).daysInMonth();
 
 export const getFirstDateOfMonth = (year, month) => new Date(year, month);
 
@@ -150,7 +144,7 @@ export const getLastDateOfMonth = (year, month) => {
   return lastDateOfCurrentMonth;
 };
 
-export const getDatesOfMonth = memoizeOne(function (year, month, start, end) {
+export const getDatesOfMonth = memoizeOne(function(year, month, start, end) {
   const validStart = typeof start === 'number' ? start : 1;
   const validEnd = typeof end === 'number' ? end : getLengthOfMonth(year, month) + 1;
   const dateOfMonth = new Date(year, month);
@@ -161,7 +155,7 @@ export const getDatesOfMonth = memoizeOne(function (year, month, start, end) {
   return datesOfMonth;
 });
 
-const getDatesOfPreviousMonthLastWeek = function (year, month, weekDayOffset = WEEK_DAY_OFFSET) {
+const getDatesOfPreviousMonthLastWeek = function(year, month, weekDayOffset = WEEK_DAY_OFFSET) {
   const firstWeekDayOfMonth = (getFirstDateOfMonth(year, month).getDay() + weekDayOffset + WEEK_LENGTH) % WEEK_LENGTH;
   const [nextYear, nextMonth] = getMonthByOffset(year, month, -1);
   const lengthOfPreviousMonth = getLengthOfMonth(nextYear, nextMonth);
@@ -170,7 +164,7 @@ const getDatesOfPreviousMonthLastWeek = function (year, month, weekDayOffset = W
   return getDatesOfMonth(nextYear, nextMonth, start, end);
 };
 
-const getDatesOfNextMonthFirstWeek = function (year, month, weekDayOffset = WEEK_DAY_OFFSET) {
+const getDatesOfNextMonthFirstWeek = function(year, month, weekDayOffset = WEEK_DAY_OFFSET) {
   const lastWeekDayOfMonth = (getLastDateOfMonth(year, month).getDay() + weekDayOffset + WEEK_LENGTH) % WEEK_LENGTH;
   const start = 1;
   const end = WEEK_LENGTH - lastWeekDayOfMonth;

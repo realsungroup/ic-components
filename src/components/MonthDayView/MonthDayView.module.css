@@ -61,10 +61,17 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: calc(100% - 24px);
 }
 
 .eventBar:hover {
   cursor: pointer;
+}
+
+.eventTitle {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .dot {
@@ -72,6 +79,8 @@
   height: 8px;
   border-radius: 50%;
   background: #fff;
+  margin-left: 4px;
+  flex-grow: 0;
 }
 
 .ellipse {

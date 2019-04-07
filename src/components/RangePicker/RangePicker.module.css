@@ -1,0 +1,8 @@
+.container :global(.ant-input) {
+  height: 32px;
+  font-size: 15px;
+  border: solid 1px rgb(210, 190, 165);
+  border-radius: 4px;
+  background: transparent;
+  color: #a0917f;
+}
