@@ -1,8 +1,40 @@
 import React from 'react';
-import { Checkbox } from 'antd';
-import RangePicker from '../RangePicker';
+import { Checkbox, Select } from 'antd';
 import AgendaList from './AgendaList';
 import styles from './Agenda.module.css';
+
+const { Option } = Select;
+
+const rangeOptions = [
+  {
+    label: '一天',
+    value: '1:d',
+  },
+  {
+    label: '一周',
+    value: '1:w',
+  },
+  {
+    label: '两周',
+    value: '2:w',
+  },
+  {
+    label: '一个月',
+    value: '1:M',
+  },
+  {
+    label: '三个月',
+    value: '3:M',
+  },
+  {
+    label: '六个月',
+    value: '6:M',
+  },
+  {
+    label: '一年',
+    value: '1:y',
+  },
+];
 
 export default class Agenda extends React.PureComponent {
   state = {
@@ -13,13 +45,9 @@ export default class Agenda extends React.PureComponent {
   };
 
   handleRangeChange = value => {
-    const dateRange = [
-      value[0].hour(0).minute(0).second(0).millisecond(0),
-      value[1].hour(23).minute(59).second(59).millisecond(999),
-    ];
-    this.setState({ dateRange });
+    this.setState({ dateRange: value });
     const { onRangeChange } = this.props;
-    typeof onRangeChange === 'function' && onRangeChange(dateRange);
+    typeof onRangeChange === 'function' && onRangeChange(value);
   };
 
   handleCheckboxChange = (event, stateField) => {
@@ -40,7 +68,7 @@ export default class Agenda extends React.PureComponent {
   };
 
   render() {
-    const { events } = this.props;
+    const { events, startDate } = this.props;
     const { dateRange, detailVisible, importantOnly, weatherVisible } = this.state;
 
     return (
@@ -48,7 +76,9 @@ export default class Agenda extends React.PureComponent {
         <div className={styles.header}>
           <div className={styles.dateRange}>
             <div className={styles.dateRangeLabel}>日期范围</div>
-            <RangePicker value={dateRange} onChange={this.handleRangeChange} />
+            <Select onChange={this.handleRangeChange} defaultValue={dateRange}>
+              {rangeOptions.map(({ label, value }) => <Option key={value} value={value}>{label}</Option>)}
+            </Select>
           </div>
           <div className={styles.headerRightPart}>
             <Checkbox onChange={this.setDetailVisibility}>详情</Checkbox>
@@ -59,6 +89,7 @@ export default class Agenda extends React.PureComponent {
         <div className={styles.body}>
           <AgendaList
             events={events}
+            startDate={startDate}
             dateRange={dateRange}
             detailVisible={detailVisible}
             importantOnly={importantOnly}

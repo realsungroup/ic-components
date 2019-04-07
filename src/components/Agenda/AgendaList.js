@@ -1,26 +1,35 @@
 import React from 'react';
+import moment from 'moment';
 import result from 'lodash/result';
 import { getWeekDayName, formatHHmmTime } from '../../utils/dateUtil';
 import { filterEventsByImportance, groupEventsByDay, getEventsGroupsInDateRange } from '../../utils/eventUtil';
 import styles from './AgendaList.module.css';
 import attachmentIcon from './images/attachment.svg';
+import weather1 from './images/icon-tq01.svg';
+import weather2 from './images/icon-tq02.svg';
+import weather3 from './images/icon-tq03.svg';
+
+const weatherIcons = {
+  1: weather1,
+  2: weather2,
+  3: weather3,
+};
 
 function getGroupTitle(date) {
   return `${getWeekDayName(date)} ${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
 }
 
 export default function AgendaList(props) {
-  const { events, dateRange, detailVisible, importantOnly, weatherVisible } = props;
+  const { events, startDate, dateRange, detailVisible, importantOnly, weatherVisible } = props;
 
   const eventsGroups = groupEventsByDay(filterEventsByImportance(events, importantOnly));
   let eventsGroupsInDateRange = [];
-  const [start, end] = dateRange || [];
-  if (start && end) {
-    eventsGroupsInDateRange = getEventsGroupsInDateRange(
-      eventsGroups,
-      start.toDate().valueOf(),
-      end.toDate().valueOf()
-    );
+  const [rangeStep, rangeUnit] = dateRange.split(':');
+  const endDate = moment(startDate)
+    .add(rangeStep, rangeUnit)
+    .toDate();
+  if (startDate && endDate) {
+    eventsGroupsInDateRange = getEventsGroupsInDateRange(eventsGroups, startDate.valueOf(), endDate.valueOf());
   }
 
   return (
@@ -30,7 +39,11 @@ export default function AgendaList(props) {
           <div className={styles.groupHeader}>
             <div className={styles.dayTitle}>{getGroupTitle(date)}</div>
             {weatherVisible && (
-              <img className={styles.dayWeather} alt={`天气${result(groupEvents[0], 'original.event_weather', '')}`} />
+              <img
+                className={styles.dayWeather}
+                src={weatherIcons[result(groupEvents[0], 'original.event_weather')]}
+                alt=""
+              />
             )}
           </div>
           <div className={styles.events}>

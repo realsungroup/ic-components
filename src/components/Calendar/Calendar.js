@@ -41,7 +41,6 @@ export default class Calendar extends React.PureComponent {
       datePickerDefaultValue: now,
       date: now.toDate(),
       activeTab: props.defaultActiveTab,
-      defaultAgendaRange: [moment().add(-10, 'days'), moment().add(10, 'days')],
       events: mockEvents,
     };
   }
@@ -67,12 +66,11 @@ export default class Calendar extends React.PureComponent {
   };
 
   handleAgendaRangeChange = value => {
-    // alert(`${value[0]} ~ ${value[1]}`);
     console.log(value);
   };
 
   render() {
-    const { date, datePickerDefaultValue, activeTab, defaultAgendaRange, events } = this.state;
+    const { date, datePickerDefaultValue, activeTab, events } = this.state;
     return (
       <div className={styles.container}>
         <div className={styles.header}>
@@ -100,7 +98,7 @@ export default class Calendar extends React.PureComponent {
         {activeTab === 'year' && '年'}
         {activeTab === 'agenda' && (
           <ViewContainer>
-            <Agenda defaultRange={defaultAgendaRange} onRangeChange={this.handleAgendaRangeChange} events={events} />
+            <Agenda startDate={date} defaultRange="1:M" onRangeChange={this.handleAgendaRangeChange} events={events} />
           </ViewContainer>
         )}
         {activeTab === 'plan' && '计划'}

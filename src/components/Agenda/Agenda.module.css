@@ -16,11 +16,25 @@
 .header {
   composes: flex;
   justify-content: space-between;
-  padding: 20px 28px;
+  padding: 20px 30px;
 }
 
 .dateRange {
   composes: flex;
+}
+
+.dateRange :global(.ant-select-selection) {
+  width: 205px;
+  height: 32px;
+  border: solid 1px rgb(210, 190, 165);
+  border-radius: 4px;
+  background: transparent;
+  color: #a69886;
+  font-size: 16px
+}
+
+.dateRange :global(.ant-select-arrow) {
+  color: #a69886;
 }
 
 .dateRangeLabel {

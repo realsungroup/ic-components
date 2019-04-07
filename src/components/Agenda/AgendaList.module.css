@@ -10,18 +10,23 @@
 .groupHeader {
   composes: flex;
   justify-content: space-between;
-  padding-right: 28px;
+  padding-right: 30px;
   margin-bottom: 8px;
+}
+
+.groupHeader img {
+  width: 34px;
+  height: 34px;
 }
 
 .dayTitle {
   background: rgb(210, 190, 165);
-  padding-left: 28px;
-  padding-right: 32px;
+  padding-left: 30px;
+  padding-right: 44px;
   color: #fff;
-  height: 32px;
-  line-height: 32px;
-  font-size: 16px;
+  height: 36px;
+  line-height: 36px;
+  font-size: 18px;
   position: relative;
 }
 
@@ -34,7 +39,7 @@
   height: 0;
   width: 0;
   border-style: solid ;
-  border-width: 16px 12px;
+  border-width: 18px 16px;
   border-color: transparent #fff transparent transparent;
 }
 
@@ -46,19 +51,24 @@
   composes: flex;
   align-items: flex-start;
   justify-content: space-between;
-  margin: 0 28px;
-  padding: 8px 0;
-  border-bottom: solid 1px rgba(210, 190, 165, 0.4);
+  margin: 0 32px;
+  padding: 12px 0;
+  border-bottom: solid 1px rgba(230, 222, 206);
 }
 
 .eventCardLeft {
   composes: flex;
   align-items: flex-start;
+  width: 75%;
+}
+
+.eventCardRight {
+  width: 25%;
 }
 
 .eventTime {
   composes: flex;
-  width: 200px;
+  width: 30%;
 }
 
 .eventTime::before {
@@ -67,32 +77,33 @@
   width: 6px;
   height: 6px;
   border-radius: 3px;
-  background: rgb(112, 149, 177);
-  margin-right: 12px;
+  background: rgb(122, 159, 186);
+  margin-right: 16px;
 }
 
 .eventTitle {
-  width: 160px;
-  white-space: nowrap;
+  width: 20%;
+  /* white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
+  text-overflow: ellipsis; */
 }
 
 .eventContent {
-  width: 280px;
+  width: 50%;
 }
 
 .eventShort {
-  margin-bottom: 4px;
 }
 
 .eventDetail {
   color: #d2bea5;
+  padding-left: 40px;
+  margin-top: 12px;
 }
 
 .eventAttachment {
   text-align: right;
-  margin-bottom: 8px;
+  /* margin-bottom: 8px; */
 }
 
 .eventAttachment img {
@@ -102,8 +113,9 @@
 
 .eventImage {
   text-align: right;
+  margin-top: 8px;
 }
 
 .eventImage img {
-  width: 200px;
+  width: 170px;
 }
