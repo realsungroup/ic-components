@@ -193,3 +193,28 @@ export const getWeeksOfMonth = memoizeOne((year, month) => {
   });
   return weeks;
 });
+
+export function getHHmmDurationByMinute(HHmm) {
+  const [start, end] = HHmm.split(':');
+  return Number(start) * 60 + Number(end);
+}
+
+export function getStepDurationByMinute(step) {
+  const [stepValue, stepUnit] = step.split(':');
+  const duration = moment.duration(stepValue, stepUnit);
+  return duration.asMinutes();
+}
+
+export const getDayTimeLine = memoizeOne(function (start, end, step, formatString) {
+  const [stepValue, stepUnit] = step.split(':');
+  const [startHour, startMinute] = start.split(':');
+  const [endHour, endMinute] = end.split(':');
+  const startMoment = moment([2019, 0, 1, Number(startHour), Number(startMinute)]);
+  const endMoment = moment([2019, 0, 1, Number(endHour), Number(endMinute)]);
+  const timeLine = [];
+  for (let endMomentValue = endMoment.toDate().valueOf(); startMoment.toDate().valueOf() <= endMomentValue;) {
+    timeLine.push(startMoment.format(formatString));
+    startMoment.add(Number(stepValue), stepUnit);
+  }
+  return timeLine;
+});

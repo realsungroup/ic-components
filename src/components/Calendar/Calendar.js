@@ -7,6 +7,7 @@ import DateSwitcher from '../DateSwitcher';
 import ViewContainer from '../ViewContainer';
 import MonthlyCalendar from '../MonthlyCalendar';
 import Agenda from '../Agenda';
+import DailyCalendar from '../DailyCalendar';
 import styles from './Calendar.module.css';
 
 import { mockEvents } from './mockData';
@@ -30,7 +31,7 @@ const tabs = [
 export default class Calendar extends React.PureComponent {
   static defaultProps = {
     // defaultActiveTab: 'month',
-    defaultActiveTab: 'agenda',
+    defaultActiveTab: 'singleDay',
   };
 
   constructor(props) {
@@ -71,6 +72,7 @@ export default class Calendar extends React.PureComponent {
 
   render() {
     const { date, datePickerDefaultValue, activeTab, events } = this.state;
+
     return (
       <div className={styles.container}>
         <div className={styles.header}>
@@ -86,7 +88,11 @@ export default class Calendar extends React.PureComponent {
           <Tab onChange={this.handleTabSwitch} tabs={tabs} activeKey={activeTab} />
         </div>
 
-        {activeTab === 'singleDay' && '单日'}
+        {activeTab === 'singleDay' && (
+          <ViewContainer>
+            <DailyCalendar date={date} events={events} />
+          </ViewContainer>
+        )}
         {activeTab === 'multiDay' && '多日'}
         {activeTab === 'singleWeek' && '单周'}
         {activeTab === 'multiWeek' && '多周'}
