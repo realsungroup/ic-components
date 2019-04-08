@@ -35,9 +35,9 @@ export default function AgendaList(props) {
   return (
     <div className="ic-agenda-list">
       {eventsGroupsInDateRange.map(({ monthDayHash, date, events: groupEvents }) => (
-        <div key={monthDayHash} className="ic-agenda__group">
-          <div className="ic-agenda__group-header">
-            <div className="ic-agenda__day-title">{getGroupTitle(date)}</div>
+        <div key={monthDayHash} className="ic-agenda-list__group">
+          <div className="ic-agenda-list__group-header">
+            <div className="ic-agenda-list__day-title">{getGroupTitle(date)}</div>
             {weatherVisible && (
               <img
                 className={styles.dayWeather}
@@ -46,7 +46,7 @@ export default function AgendaList(props) {
               />
             )}
           </div>
-          <div className="ic-agenda__events">
+          <div className="ic-agenda-list__events">
             {groupEvents.map(event => {
               const {
                 occurId,
@@ -62,27 +62,27 @@ export default function AgendaList(props) {
               } = event;
               const hasAttachment = event_attach && event_attach[1];
               return (
-                <div key={occurId} className="ic-agenda__event-card">
-                  <div className="ic-agenda__event-card-left">
-                    <div className="ic-agenda__event-time">
+                <div key={occurId} className="ic-agenda-list__event-card">
+                  <div className="ic-agenda-list__event-card-left">
+                    <div className="ic-agenda-list__event-time">
                       {`${formatHHmmTime(event_time)} ~ ${formatHHmmTime(event_endtime)}`}
                     </div>
-                    <div className="ic-agenda__event-title">{event_title}</div>
-                    <div className="ic-agenda__event-content">
-                      <div className="ic-agenda__event-short">{event_short}</div>
-                      {detailVisible && <div className="ic-agenda__event-detail">{event_desc}</div>}
+                    <div className="ic-agenda-list__event-title">{event_title}</div>
+                    <div className="ic-agenda-list__event-content">
+                      <div className="ic-agenda-list__event-short">{event_short}</div>
+                      {detailVisible && <div className="ic-agenda-list__event-detail">{event_desc}</div>}
                     </div>
                   </div>
-                  <div className="ic-agenda__event-card-right">
+                  <div className="ic-agenda-list__event-card-right">
                     {hasAttachment && (
-                      <div className="ic-agenda__event-attachment">
+                      <div className="ic-agenda-list__event-attachment">
                         <a href={event_attach[1]} target="_blank">
                           <img src={attachmentIcon} />
                         </a>
                       </div>
                     )}
                     {detailVisible && event_image && (
-                      <div className="ic-agenda__event-image">
+                      <div className="ic-agenda-list__event-image">
                         <img src={event_image} />
                       </div>
                     )}
