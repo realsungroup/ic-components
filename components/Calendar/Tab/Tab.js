@@ -1,6 +1,5 @@
 import React from 'react';
 import classnames from 'classnames';
-import styles from './Tab.module.css';
 
 export default class Tab extends React.PureComponent {
   static defaultProps = {

@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { getWeeksOfMonth } from '../utils/dateUtil';
-// import styles from './MonthlyCalendarBody.module.css';
+import { getWeeksOfMonth } from '../../utils/dateUtil';
 
 export default class MonthlyCalendarBody extends React.PureComponent {
   static propTypes = {

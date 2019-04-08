@@ -1,8 +1,8 @@
 import React from 'react';
 import moment from 'moment';
 import result from 'lodash/result';
-import { getWeekDayName, formatHHmmTime } from '../utils/dateUtil';
-import { filterEventsByImportance, groupEventsByDay, getEventsGroupsInDateRange } from '../utils/eventUtil';
+import { getWeekDayName, formatHHmmTime } from '../../utils/dateUtil';
+import { filterEventsByImportance, groupEventsByDay, getEventsGroupsInDateRange } from '../../utils/eventUtil';
 import styles from './AgendaList.module.css';
 import attachmentIcon from './images/attachment.svg';
 import weather1 from './images/icon-tq01.svg';

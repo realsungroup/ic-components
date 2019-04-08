@@ -1,6 +1,5 @@
 import React from 'react';
-import { getWeekDaysInfo } from '../utils/dateUtil';
-// import styles from './MonthlyCalendarHeader.module.css';
+import { getWeekDaysInfo } from '../../utils/dateUtil';
 
 export default class MonthlyCalendarHeader extends React.PureComponent {
   render() {

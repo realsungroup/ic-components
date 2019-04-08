@@ -1,6 +1,6 @@
 import React from 'react';
-import { getDayTimeLine } from '../utils/dateUtil';
-import ChildrenWithProps from '../ChildrenWithProps';
+import { getDayTimeLine } from '../../utils/dateUtil';
+import ChildrenWithProps from '../../ChildrenWithProps';
 
 export default class DayTimeLine extends React.PureComponent {
   state = {

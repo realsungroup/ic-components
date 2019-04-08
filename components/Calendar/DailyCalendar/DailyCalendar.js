@@ -1,8 +1,7 @@
 import React from 'react';
-import ChildrenWithProps from '../ChildrenWithProps';
+import ChildrenWithProps from '../../ChildrenWithProps';
 import DayTimeLine from '../DayTimeLine';
 import SingleDayView from '../SingleDayView';
-// import styles from './DailyCalendar.module.css';
 
 export default class DailyCalendar extends React.PureComponent {
   render() {

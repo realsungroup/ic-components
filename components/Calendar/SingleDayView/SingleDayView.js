@@ -1,8 +1,7 @@
 import React from 'react';
 import memoizeOne from 'memoize-one';
-import { getHHmmDurationByMinute } from '../utils/dateUtil';
-import { normalizeEvents } from '../utils/eventUtil';
-import styles from './SingleDayView.module.css';
+import { getHHmmDurationByMinute } from '../../utils/dateUtil';
+import { normalizeEvents } from '../../utils/eventUtil';
 
 export default class SingleDayView extends React.PureComponent {
   componentDidMount() {

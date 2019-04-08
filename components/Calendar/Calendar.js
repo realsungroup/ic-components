@@ -1,13 +1,13 @@
 import React from 'react';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
-import Tab from '../Tab';
-import DatePicker from '../DatePicker';
-import DateSwitcher from '../DateSwitcher';
-import ViewContainer from '../ViewContainer';
-import MonthlyCalendar from '../MonthlyCalendar';
-import Agenda from '../Agenda';
-import DailyCalendar from '../DailyCalendar';
+import Tab from './Tab';
+import DatePicker from './DatePicker';
+import DateSwitcher from './DateSwitcher';
+import ViewContainer from './ViewContainer';
+import MonthlyCalendar from './MonthlyCalendar';
+import Agenda from './Agenda';
+import DailyCalendar from './DailyCalendar';
 
 const switchStepForMonthly = {
   unit: 'month',

@@ -5,20 +5,19 @@ import { mockEvents } from './mockData';
 import 'antd/dist/antd.css';
 
 import '../style/index.less';
-import '../../Agenda/style/index.less';
-import '../../Calendar/style/index.less';
-import '../../DailyCalendar/style/index.less';
-import '../../DatePicker/style/index.less';
-import '../../DateSwitcher/style/index.less';
-import '../../DayTimeLine/style/index.less';
-import '../../EventContainer/style/index.less';
-import '../../MonthDayView/style/index.less';
-import '../../MonthlyCalendar/style/index.less';
-import '../../MonthlyCalendarBody/style/index.less';
-import '../../MonthlyCalendarHeader/style/index.less';
-import '../../SingleDayView/style/index.less';
-import '../../Tab/style/index.less';
-import '../../ViewContainer/style/index.less';
+import '../Agenda/style/index.less';
+import '../DailyCalendar/style/index.less';
+import '../DatePicker/style/index.less';
+import '../DateSwitcher/style/index.less';
+import '../DayTimeLine/style/index.less';
+import '../EventContainer/style/index.less';
+import '../MonthDayView/style/index.less';
+import '../MonthlyCalendar/style/index.less';
+import '../MonthlyCalendarBody/style/index.less';
+import '../MonthlyCalendarHeader/style/index.less';
+import '../SingleDayView/style/index.less';
+import '../Tab/style/index.less';
+import '../ViewContainer/style/index.less';
 
 storiesOf('Calendar 日历', module)
   .add('单日', () => (

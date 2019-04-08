@@ -1,5 +1,5 @@
 import React from 'react';
-import { allocateDailyEvents } from '../utils/eventUtil';
+import { allocateDailyEvents } from '../../utils/eventUtil';
 import MonthlyCalendarHeader from '../MonthlyCalendarHeader';
 import MonthlyCalendarBody from '../MonthlyCalendarBody';
 import MonthDayView from '../MonthDayView';

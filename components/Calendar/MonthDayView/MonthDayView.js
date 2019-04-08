@@ -1,8 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
-import { monthDayHasher, isSameMonthDay, isFirstDateOfWeek, isLastDateOfWeek } from '../utils/dateUtil';
-import { getEventDuration } from '../utils/eventUtil';
-import styles from './MonthDayView.module.css';
+import { monthDayHasher, isSameMonthDay, isFirstDateOfWeek, isLastDateOfWeek } from '../../utils/dateUtil';
+import { getEventDuration } from '../../utils/eventUtil';
 
 const dayElementPadding = {
   top: 1,
@@ -58,7 +57,7 @@ export default class MonthDayView extends React.PureComponent {
     return (
       <div className="ic-month-day-view" style={{ padding: constructPadding(dayElementPadding) }}>
         <div
-          className={classnames(styles.monthDay, {
+          className={classnames('ic-month-day-view__month-day', {
             [`ic-month-day-view__month-day-active`]: isActive,
             [`ic-month-day-view__other-month-day`]: isDateOfOtherMonth,
             [`ic-month-day-view__weekend`]: isWeekend,
