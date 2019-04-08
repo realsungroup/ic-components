@@ -10,7 +10,6 @@ import Agenda from '../Agenda';
 import DailyCalendar from '../DailyCalendar';
 import styles from './Calendar.module.css';
 
-import { mockEvents } from './mockData';
 
 const switchStepForMonthly = {
   unit: 'month',
@@ -42,7 +41,6 @@ export default class Calendar extends React.PureComponent {
       datePickerDefaultValue: now,
       date: now.toDate(),
       activeTab: props.defaultActiveTab,
-      events: mockEvents,
     };
   }
 
@@ -71,7 +69,8 @@ export default class Calendar extends React.PureComponent {
   };
 
   render() {
-    const { date, datePickerDefaultValue, activeTab, events } = this.state;
+    const { events } = this.props;
+    const { date, datePickerDefaultValue, activeTab } = this.state;
 
     return (
       <div className={styles.container}>
