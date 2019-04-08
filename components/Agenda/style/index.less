@@ -1,0 +1,188 @@
+.ic-agenda {
+  width: auto;
+  font-size: 16px;
+  color: #a0917f;
+
+  &__flex {
+    display: flex;
+    align-items: center;
+  }
+
+  &__font-style {
+    font-size: 16px;
+    color: #a0917f;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 30px;
+  }
+
+  &__date-range {
+    display: flex;
+    align-items: center;
+  }
+
+  &__date-range .ant-select-selection {
+    width: 205px;
+    height: 32px;
+    border: solid 1px rgb(210, 190, 165);
+    border-radius: 4px;
+    background: transparent;
+    color: #a69886;
+    font-size: 16px;
+  }
+
+  &__date-range .ant-select-arrow {
+    color: #a69886;
+  }
+
+  &__date-range-label {
+    margin-right: 20px;
+  }
+
+  &__header-right-part {
+    .ant-checkbox-wrapper {
+      font-size: 16px;
+      color: #a0917f;
+    }
+
+    .ant-checkbox-checked .ant-checkbox-inner {
+      background: #a0917f;
+      border-color: #a0917f;
+    }
+  }
+
+  &__body {
+    margin-top: 4px;
+  }
+
+  // AgendaList 组件
+  &-list {
+    width: auto;
+
+    .flex {
+      display: flex;
+      align-items: center;
+    }
+
+    &__group-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-right: 30px;
+      margin-bottom: 8px;
+
+      img {
+        width: 34px;
+        height: 34px;
+      }
+    }
+
+    &__day-title {
+      background: rgb(210, 190, 165);
+      padding-left: 30px;
+      padding-right: 44px;
+      color: #fff;
+      height: 36px;
+      line-height: 36px;
+      font-size: 18px;
+      position: relative;
+
+      &::after {
+        content: '';
+        display: block;
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 0;
+        width: 0;
+        border-style: solid;
+        border-width: 18px 16px;
+        border-color: transparent #fff transparent transparent;
+      }
+    }
+
+    &__events {
+      margin-bottom: 24px;
+    }
+
+    &__event-card {
+      display: flex;
+      align-items: center;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin: 0 32px;
+      padding: 12px 0;
+      border-bottom: solid 1px rgba(230, 222, 206);
+    }
+
+    &__event-card-left {
+      display: flex;
+      align-items: center;
+      align-items: flex-start;
+      width: 75%;
+    }
+
+    &__event-card-right {
+      width: 25%;
+    }
+
+    &__event-time {
+      display: flex;
+      align-items: center;
+      width: 30%;
+
+      &::before {
+        content: '';
+        display: block;
+        width: 6px;
+        height: 6px;
+        border-radius: 3px;
+        background: rgb(122, 159, 186);
+        margin-right: 16px;
+      }
+    }
+
+    &__event-title {
+      width: 20%;
+      /* white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis; */
+    }
+
+    &__event-content {
+      width: 50%;
+    }
+
+    &__event-short {
+    }
+
+    &__event-detail {
+      color: #d2bea5;
+      padding-left: 40px;
+      margin-top: 12px;
+    }
+
+    &__event-attachment {
+      text-align: right;
+
+      /* margin-bottom: 8px; */
+      img {
+        width: 18px;
+        height: 18px;
+      }
+    }
+
+    &__event-image {
+      text-align: right;
+      margin-top: 8px;
+
+      img {
+        width: 170px;
+      }
+    }
+  }
+}

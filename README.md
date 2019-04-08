@@ -3,7 +3,7 @@
 ## 一、开发
 
 ```shell
-npm run storybook
+npm run dev
 ```
 
 ## 二、编译

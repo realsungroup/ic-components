@@ -1,0 +1,37 @@
+.ic-day-time-line {
+  display: flex;
+
+  &__left {
+    background: #fff;
+    height: 100%;
+  }
+
+  &__right {
+    flex-grow: 1;
+    position: relative;
+  }
+
+  &__label-row {
+    position: relative;
+    height: 48px;
+  }
+
+  &__label {
+    padding-left: 12px;
+    padding-right: 20px;
+    font-size: 14px;
+    color: #a0917f;
+    position: relative;
+    top: -10px;
+    z-index: 9;
+  }
+
+  &__bg-row {
+    height: 48px;
+    background: rgb(250, 247, 243);
+
+    &:nth-child(even) {
+      background: #fff;
+    }
+  }
+}
