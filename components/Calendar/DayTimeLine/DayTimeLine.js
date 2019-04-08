@@ -10,8 +10,10 @@ export default class DayTimeLine extends React.PureComponent {
   bgRef = React.createRef();
 
   componentDidMount() {
+    const { onGetBgElement } = this.props;
     const { current } = this.bgRef;
     this.setState({ bgHeight: current.offsetHeight });
+    typeof onGetBgElement === 'function' && onGetBgElement(current);
   }
 
   render() {

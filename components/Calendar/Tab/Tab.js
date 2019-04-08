@@ -21,7 +21,7 @@ export default class Tab extends React.PureComponent {
         {tabs.map(({ key, label }) => (
           <div
             key={key}
-            className={classnames('ic-tab__tab', { [`ic-tab__tab-active`]: key === activeKey })}
+            className={classnames('ic-tab__tab', { 'ic-tab__tab-active': key === activeKey })}
             onClick={() => {
               this.switchTo(key);
             }}
