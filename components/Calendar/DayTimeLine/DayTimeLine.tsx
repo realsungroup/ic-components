@@ -10,16 +10,17 @@ export default class DayTimeLine extends React.PureComponent<any, any> {
 
   bgRef: any = React.createRef();
 
+  sideRef: any = React.createRef();
+
   componentDidMount() {
-    const { onGetBgElement } = this.props;
-    const { current } = this.bgRef;
-    this.setState({ bgHeight: current.offsetHeight });
-    typeof onGetBgElement === 'function' && onGetBgElement(current);
+    const { onGetSideElement } = this.props;
+    this.setState({ bgHeight: this.bgRef.current.offsetHeight });
+    typeof onGetSideElement === 'function' && onGetSideElement(this.sideRef.current);
   }
 
   render() {
     const { bgHeight } = this.state;
-    const { startHHmm, endHHmm, step, formatString, timeSuffix, children } = this.props;
+    const { startHHmm, endHHmm, step, formatString, timeSuffix, children, sideWidth } = this.props;
     let dayTimeLine = getDayTimeLine(startHHmm, endHHmm, step, formatString);
     if (timeSuffix) {
       const [am = 'AM', pm = 'PM'] = timeSuffix;
@@ -33,12 +34,14 @@ export default class DayTimeLine extends React.PureComponent<any, any> {
 
     return (
       <div className="ic-day-time-line">
-        <div className="ic-day-time-line__left">
-          {dayTimeLine.map(time => (
-            <div key={time} className="ic-day-time-line__label-row">
-              <div className="ic-day-time-line__label">{time}</div>
-            </div>
-          ))}
+        <div ref={this.sideRef} className="ic-day-time-line__left">
+          <div>
+            {dayTimeLine.map(time => (
+              <div key={time} className="ic-day-time-line__label-row">
+                <div className="ic-day-time-line__label">{time}</div>
+              </div>
+            ))}
+          </div>
         </div>
         <div ref={this.bgRef} className="ic-day-time-line__right">
           <div>

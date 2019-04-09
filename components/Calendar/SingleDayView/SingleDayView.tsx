@@ -29,8 +29,8 @@ export default class SingleDayView extends React.PureComponent<any, any> {
       const startMinutes = getHHmmDurationByMinute(eventStart);
       const endMinutes = getHHmmDurationByMinute(eventEnd);
       const eventTotalMinutes = endMinutes - startMinutes;
-      const elementTop = startMinutes * heightToMinutes;
-      const elementHeight = (eventTotalMinutes * containerHeight) / totalMinutes;
+      const elementTop = startMinutes * heightToMinutes * 0.9992;
+      const elementHeight = (eventTotalMinutes * containerHeight * 0.9992) / totalMinutes;
       element.style.top = `${elementTop}px`;
       element.style.height = `${elementHeight}px`;
     });
@@ -43,11 +43,11 @@ export default class SingleDayView extends React.PureComponent<any, any> {
   };
 
   render() {
-    const { events } = this.props;
+    const { events, eventsFilter, style } = this.props;
 
     return (
-      <div ref={this.rootRef} className="ic-single-day-view">
-        {normalizeEvents(events).map(event => {
+      <div ref={this.rootRef} className="ic-single-day-view" style={style}>
+        {normalizeEvents(events || []).filter(eventsFilter).map(event => {
           const {
             occurId,
             original: { event_time, event_endtime, event_title, event_hostheadurl, category_color },

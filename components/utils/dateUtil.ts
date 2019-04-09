@@ -118,6 +118,12 @@ export const getMonthByOffset = (year, month, offset) => {
   return [nextYear, nextMonth];
 };
 
+export const getDaysToLastDayOfWeek = date => {
+  const weekDay = date.getDay();
+  const weekDays = getWeekDayIdsByOffset()
+  return (weekDays[WEEK_LENGTH - 1] - weekDay + WEEK_LENGTH) % WEEK_LENGTH;
+}
+
 export const isFirstDateOfWeek = date => {
   const weekDay = date.getDay();
   return getWeekDayIdsByOffset().indexOf(weekDay) === 0;
@@ -137,7 +143,7 @@ export const monthDayHasher = date => {
   return dateCopy.valueOf();
 };
 
-export const isSameMonthDay = (date1, date2) =>
+export const isSameMonthDay = (date1: Date, date2: Date) =>
   date1.getDate() === date2.getDate() && date1.getMonth() === date2.getMonth();
 
 export const getLengthOfMonth = (year, month) => moment(new Date(year, month)).daysInMonth();
@@ -166,6 +172,12 @@ export const getDatesBetween = memoizeOne(function(startDate, endDate, step = '1
     dates.push(start.toDate());
   }
   return dates;
+});
+
+export const getDateSectionOfMultiDay = memoizeOne(function(today: Date, days: number) {
+  const leftDays = Math.floor(days / 2);
+  const rightDays = days - leftDays - 1;
+  return [moment(today).subtract(leftDays, 'd').toDate(), moment(today).add(rightDays, 'd').toDate()];
 });
 
 export const getDatesOfMonth = memoizeOne(function(year, month, start, end) {

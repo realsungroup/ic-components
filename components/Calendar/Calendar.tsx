@@ -1,6 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
+import { getDateSectionOfMultiDay } from '../utils/dateUtil';
 import Tab from './Tab';
 import DatePicker from './DatePicker';
 import DateSwitcher from './DateSwitcher';
@@ -68,6 +69,7 @@ export default class Calendar extends React.PureComponent<any, any> {
   render() {
     const { events } = this.props;
     const { date, datePickerDefaultValue, activeTab } = this.state;
+    const [startDateOfMultiDay, endDateOfMultiDay] = getDateSectionOfMultiDay(date, 3);
 
     return (
       <div className="ic-calendar">
@@ -86,10 +88,14 @@ export default class Calendar extends React.PureComponent<any, any> {
 
         {activeTab === 'singleDay' && (
           <ViewContainer>
-            <DailyCalendar date={date} events={events} />
+            <DailyCalendar startDate={date} endDate={date} events={events} />
           </ViewContainer>
         )}
-        {activeTab === 'multiDay' && '多日'}
+        {activeTab === 'multiDay' && (
+          <ViewContainer>
+            <DailyCalendar startDate={startDateOfMultiDay} endDate={endDateOfMultiDay} events={events} />
+          </ViewContainer>
+        )}
         {activeTab === 'singleWeek' && '单周'}
         {activeTab === 'multiWeek' && '多周'}
         {activeTab === 'month' && (

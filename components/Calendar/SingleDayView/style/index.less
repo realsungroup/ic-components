@@ -1,5 +1,10 @@
 .ic-single-day-view {
   position: relative;
+  height: 100%;
+
+  &:not(:last-child) {
+    border-right: solid 1px rgb(237, 228, 214);
+  }
 
   &__event {
     position: absolute;

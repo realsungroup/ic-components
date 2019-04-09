@@ -1,7 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
-import { monthDayHasher, isSameMonthDay, isFirstDateOfWeek, isLastDateOfWeek } from '../../utils/dateUtil';
-import { getEventDuration } from '../../utils/eventUtil';
+import { monthDayHasher, isSameMonthDay, isFirstDateOfWeek, getDaysToLastDayOfWeek } from '../../utils/dateUtil';
+import { getEventDuration, isTotalDayEvent } from '../../utils/eventUtil';
 
 const dayElementPadding = {
   top: 1,
@@ -14,29 +14,34 @@ const constructPadding = ({ top, bottom, left, right }) =>
   `${top}px ${right || 0}px ${bottom || top}px ${left || right}px`;
 
 export default class MonthDayView extends React.PureComponent<any, any> {
+  static defaultProps = {
+    dateVisible: true,
+    dotVisible: true,
+    eventsLimit: 3,
+    calendarActiveDate: new Date(),
+    isFirstDayOfSection: isFirstDateOfWeek,
+    getDaysToLastDayOfSection: getDaysToLastDayOfWeek,
+    eventsFilter: () => true,
+  }
+
   getEventElementWidth(event) {
-    const { dayElementWidth } = this.props;
+    const { dayElementWidth, getDaysToLastDayOfSection } = this.props;
     if (!dayElementWidth) {
       return undefined;
     }
 
     const { left, right } = dayElementPadding;
-    if (isLastDateOfWeek(event.startTime)) {
-      return dayElementWidth - left - right;
-    }
-
+    const daysToLastDayOfSection = getDaysToLastDayOfSection(event.startTime);
+    const maxDurationByDay = daysToLastDayOfSection + 1
     const eventDurationByDay = getEventDuration(event, 'day');
-    return dayElementWidth * eventDurationByDay - left - right;
+    const realDurationByDay = maxDurationByDay > eventDurationByDay ? eventDurationByDay : maxDurationByDay
+    return dayElementWidth * realDurationByDay - left - right;
   }
 
   isVisible(event) {
+    const { isFirstDayOfSection } = this.props;
     const { alreadyBegun, startTime } = event;
-    return !alreadyBegun || isFirstDateOfWeek(startTime);
-  }
-
-  isTotalDayEvent(event) {
-    const { event_time, event_endtime } = event.original;
-    return event_time === '00:00' && event_endtime === '23:59';
+    return !alreadyBegun || isFirstDayOfSection(startTime);
   }
 
   handleEventClick = event => {
@@ -45,7 +50,17 @@ export default class MonthDayView extends React.PureComponent<any, any> {
   };
 
   render() {
-    const { date, calendarActiveDate, params: eventsMap } = this.props;
+    const {
+      date,
+      calendarActiveDate,
+      params: eventsMap,
+      dateVisible,
+      dotVisible,
+      eventsLimit: propEventsLimit,
+      eventsFilter,
+      style,
+    } = this.props;
+
     const eventKey = monthDayHasher(date);
     const eventsOfToday = eventsMap.get(eventKey) || [];
     const monthDay = date.getDate();
@@ -53,10 +68,11 @@ export default class MonthDayView extends React.PureComponent<any, any> {
     const isDateOfOtherMonth = date.getMonth() !== calendarActiveDate.getMonth();
     const weekDay = date.getDay();
     const isWeekend = weekDay === 0 || weekDay === 6;
+    const eventsLimit = propEventsLimit || eventsOfToday.length;
 
     return (
-      <div className="ic-month-day-view" style={{ padding: constructPadding(dayElementPadding) }}>
-        <div
+      <div className="ic-month-day-view" style={{ padding: constructPadding(dayElementPadding), ...style }}>
+        {dateVisible && <div
           className={classnames('ic-month-day-view__month-day', {
             [`ic-month-day-view__month-day-active`]: isActive,
             [`ic-month-day-view__other-month-day`]: isDateOfOtherMonth,
@@ -64,9 +80,9 @@ export default class MonthDayView extends React.PureComponent<any, any> {
           })}
         >
           {monthDay}
-        </div>
+        </div>}
         <div>
-          {eventsOfToday.slice(0, 3).map(event => {
+          {eventsOfToday.slice(0, eventsLimit).filter(eventsFilter).map(event => {
             const {
               original: { event_title, occur_id, category_color, event_hostheadurl },
             } = event;
@@ -89,12 +105,12 @@ export default class MonthDayView extends React.PureComponent<any, any> {
                   }}
                 >
                   <div className="ic-month-day-view__event-title">{event_title}</div>
-                  {this.isTotalDayEvent(event) && <div className="ic-month-day-view__dot" />}
+                  {dotVisible && isTotalDayEvent(event) && <div className="ic-month-day-view__dot" />}
                 </div>
               </div>
             );
           })}
-          {eventsOfToday.length > 3 && <div className="ic-month-day-view__ellipse">...</div>}
+          {eventsOfToday.length > eventsLimit && <div className="ic-month-day-view__ellipse">...</div>}
         </div>
       </div>
     );

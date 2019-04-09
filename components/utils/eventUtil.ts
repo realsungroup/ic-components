@@ -101,3 +101,8 @@ export const groupEventsByDay = memoizeOne(function(events) {
 export const getEventsGroupsInDateRange = memoizeOne((groups, startDateValue, endDateValue) =>
   groups.filter(({ monthDayHash }) => monthDayHash >= startDateValue && monthDayHash <= endDateValue)
 );
+
+export const isTotalDayEvent = (event) => {
+  const { event_time, event_endtime } = event.original;
+  return event_time === '00:00' && event_endtime === '23:59';
+};

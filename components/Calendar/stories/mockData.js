@@ -10,7 +10,7 @@ export const mockEvents = [
     event_hostheadurl: 'http://placekitten.com/30/30',
     event_image: 'http://placekitten.com/200/140',
     event_time: '00:00',
-    event_endtime: '08:00',
+    event_endtime: '23:59',
     event_weather: 1,
     event_attach: ['附件', 'http://www.baidu.com'],
     event_important: 1,
@@ -72,6 +72,20 @@ export const mockEvents = [
     event_hostheadurl: 'http://placekitten.com/36/36',
     event_time: '18:00',
     event_endtime: '21:00',
+    event_weather: 3,
+    event_important: 1,
+  },
+  {
+    occur_id: 6, // 事件发生编号（唯一）
+    category_color: 'rgb(67, 209, 227)',
+    event_title: '事件6',
+    event_short: '上海市黄埔区茂名南路53号上海花园酒店',
+    event_desc: '事件6：一楼大堂右侧，请至组委会领餐券',
+    occur_begin: '2019-04-14T20:00:00.000Z', // 事件发生时间
+    occur_end: '2019-04-14T23:59:59.999Z', // 事件发生结束时间
+    event_hostheadurl: 'http://placekitten.com/36/36',
+    event_time: '22:00',
+    event_endtime: '23:45',
     event_weather: 3,
     event_important: 1,
   },
