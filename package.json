@@ -1,10 +1,10 @@
 {
-  "name": "my-app",
+  "name": "ic-components",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
     "antd": "^3.16.1",
-    "antd-tools-extra": "2.0.0",
+    "antd-tools-extra": "1.0.0",
     "less": "^3.9.0",
     "less-loader": "^4.1.0",
     "lodash": "^4.17.11",
@@ -16,6 +16,7 @@
   },
   "scripts": {
     "dev": "start-storybook",
+    "compile": "antd-tools run compile",
     "test": "node scripts/test.js"
   },
   "eslintConfig": {
