@@ -1,15 +1,28 @@
 {
   "compilerOptions": {
-    "strictNullChecks": true,
+    "outDir": "build/lib",
+    "module": "es2015",
+    "target": "es5",
+    "lib": ["es5", "es6", "es7", "es2017", "dom"],
+    "sourceMap": true,
+    "allowJs": false,
+    "jsx": "react",
     "moduleResolution": "node",
-    "esModuleInterop": true,
+    "rootDirs": ["components"],
+    "baseUrl": "components",
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitReturns": false,
+    "noImplicitThis": true,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "suppressImplicitAnyIndexErrors": true,
+    "noUnusedLocals": false,
+    "declaration": true,
+    "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
-    "jsx": "preserve",
-    "noUnusedParameters": true,
-    "noUnusedLocals": true,
-    "noImplicitAny": true,
-    "target": "es6",
-    "lib": ["dom", "es7"]
+    "emitDecoratorMetadata": true,
+    "noUnusedParameters": false
   },
-  "exclude": ["node_modules", "lib", "es"]
+  "include": ["components/**/*"],
+  "exclude": ["node_modules", "build", "scripts"]
 }

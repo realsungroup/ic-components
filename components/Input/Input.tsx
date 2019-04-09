@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default class Input extends React.PureComponent {
+export default class Input extends React.Component<any, any> {
   static defaultProps = {};
 
   static propTypes = {};
@@ -8,6 +8,6 @@ export default class Input extends React.PureComponent {
   state = {};
 
   render() {
-    return <Input />;
+    return <input />;
   }
 }
