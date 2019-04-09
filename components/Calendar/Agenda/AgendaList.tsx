@@ -1,20 +1,12 @@
 /// <reference path='../../../typings/custom-typings.d.ts'/>
 
 import React from 'react';
+import classnames from 'classnames';
 import moment from 'moment';
 import result from 'lodash/result';
 import { getWeekDayName, formatHHmmTime } from '../../utils/dateUtil';
 import { filterEventsByImportance, groupEventsByDay, getEventsGroupsInDateRange } from '../../utils/eventUtil';
-import attachmentIcon from 'react-svg-loader!./images/attachment.svg';
-import weather1 from 'react-svg-loader!./images/icon-tq01.svg';
-import weather2 from 'react-svg-loader!./images/icon-tq02.svg';
-import weather3 from 'react-svg-loader!./images/icon-tq03.svg';
 
-// const weatherIcons = {
-//   1: weather1,
-//   2: weather2,
-//   3: weather3,
-// };
 
 function getGroupTitle(date) {
   return `${getWeekDayName(date)} ${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
@@ -39,7 +31,15 @@ export default function AgendaList(props) {
         <div key={monthDayHash} className="ic-agenda-list__group">
           <div className="ic-agenda-list__group-header">
             <div className="ic-agenda-list__day-title">{getGroupTitle(date)}</div>
-            {/* {weatherVisible && <img src={weatherIcons[result(groupEvents[0], 'original.event_weather')]} alt="" />} */}
+            {weatherVisible && (
+              <div
+                className={classnames(
+                  'ic-agenda__img',
+                  'ic-agenda-list__weather',
+                  `ic-agenda-list__weather-${result(groupEvents[0], 'original.event_weather')}`
+                )}
+              />
+            )}
           </div>
           <div className="ic-agenda-list__events">
             {groupEvents.map(event => {
@@ -71,13 +71,13 @@ export default function AgendaList(props) {
                   <div className="ic-agenda-list__event-card-right">
                     {hasAttachment && (
                       <div className="ic-agenda-list__event-attachment">
-                        <a href={event_attach[1]} target="_blank">
-                          {/* <img src={attachmentIcon} /> */}
+                        <a className="ic-agenda__img" href={event_attach[1]} target="_blank">
+                          <div className="ic-agenda-list__event-attachment-icon" />
                         </a>
                       </div>
                     )}
                     {detailVisible && event_image && (
-                      <div className="ic-agenda-list__event-image">{/* <img src={event_image} /> */}</div>
+                      <div className="ic-agenda-list__event-image"><img src={event_image} /></div>
                     )}
                   </div>
                 </div>
