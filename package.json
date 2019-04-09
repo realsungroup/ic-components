@@ -1,7 +1,6 @@
 {
   "name": "ic-components",
   "version": "0.1.0",
-  "private": true,
   "main": "./lib/index.js",
   "dependencies": {
     "antd": "^3.16.1",
@@ -16,8 +15,7 @@
   },
   "scripts": {
     "dev": "start-storybook",
-    "compile": "antd-tools run compile",
-    "test": "node scripts/test.js"
+    "compile": "antd-tools run compile"
   },
   "devDependencies": {
     "@babel/core": "^7.4.3",
