@@ -1,0 +1,12 @@
+.storybook/
+.vscode/
+components/
+docs/
+node_modules/
+scripts/
+
+.eslintignore
+.eslintrc.json
+.gitignore
+.tsconfig.json
+yarn.lock
