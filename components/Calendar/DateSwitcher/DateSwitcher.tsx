@@ -3,17 +3,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import moment from 'moment';
+import { parseStep } from '../../utils/dateUtil';
 
 export default class DateSwitcher extends React.PureComponent<any, any> {
   static propTypes = {
-    step: PropTypes.object.isRequired,
+    step: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
-    step: {
-      unit: 'day',
-      value: 1,
-    },
+    step: '1:d',
   };
 
   handleChange = value => {
@@ -23,27 +22,34 @@ export default class DateSwitcher extends React.PureComponent<any, any> {
 
   switchByOffset = (forward?) => {
     const { value: date, step } = this.props;
-    const { unit, value } = step;
-
-    const nextDate = new Date(date);
-    const offset = forward ? value : -value;
-    switch (unit) {
-    case 'year':
-      nextDate.setFullYear(date.getFullYear() + offset);
-      break;
-    case 'month':
-      nextDate.setMonth(date.getMonth() + offset);
-      break;
-    case 'day':
-      nextDate.setDate(date.getDate() + offset);
-      break;
-    case 'week':
-      nextDate.setDate(date.getDate() + offset * 7);
-      break;
-    default:
-      break;
+    const [value, unit] = parseStep(step);
+    const nextMoment = moment(date);
+    if (forward) {
+      nextMoment.add(value, unit);
+    } else {
+      nextMoment.subtract(value, unit);
     }
-    this.handleChange(nextDate);
+    this.handleChange(nextMoment.toDate());
+
+    // const nextDate = new Date(date);
+    // const offset = forward ? value : -value;
+    // switch (unit) {
+    // case 'year':
+    //   nextDate.setFullYear(date.getFullYear() + offset);
+    //   break;
+    // case 'month':
+    //   nextDate.setMonth(date.getMonth() + offset);
+    //   break;
+    // case 'day':
+    //   nextDate.setDate(date.getDate() + offset);
+    //   break;
+    // case 'week':
+    //   nextDate.setDate(date.getDate() + offset * 7);
+    //   break;
+    // default:
+    //   break;
+    // }
+    // this.handleChange(nextDate);
   };
 
   switchBack = () => {

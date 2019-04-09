@@ -16,7 +16,7 @@ const switchStepForMonthly = {
 };
 
 const tabs = [
-  { key: 'singleDay', label: '单日' },
+  { key: 'singleDay', label: '单日', },
   { key: 'multiDay', label: '多日' },
   { key: 'singleWeek', label: '单周' },
   { key: 'multiWeek', label: '多周' },
@@ -25,6 +25,15 @@ const tabs = [
   { key: 'agenda', label: '议程' },
   { key: 'plan', label: '计划' },
 ];
+
+const switchSteps = {
+  singleDay: '1:d',
+  multiDay: '3:d',
+  singleWeek: '1:w',
+  multiWeek: '4:w',
+  month: '1:M',
+  year: '1:y',
+}
 
 export default class Calendar extends React.PureComponent<any, any> {
   static defaultProps = {
@@ -77,7 +86,7 @@ export default class Calendar extends React.PureComponent<any, any> {
           <div className="ic-calendar__date-pickers">
             <DateSwitcher
               className="ic-calendar__date-switcher"
-              step={switchStepForMonthly}
+              step={switchSteps[activeTab] || '1:M'}
               value={date}
               onChange={this.handleDateSwitch}
             />
