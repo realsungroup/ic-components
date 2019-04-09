@@ -24,6 +24,14 @@ const DEFAULT_LANGUAGE = 'zh-cn';
 export const WEEK_LENGTH = 7;
 export const MILLISECONDS_OF_ONE_DAY = 24 * 60 * 60 * 1000;
 
+/**
+ * @param step {string} format: "value:unit"
+ */
+export const parseStep = step => {
+  const [value, unit] = step.split(':');
+  return [Number(value), unit];
+};
+
 const cyclicMoveWeekDay = memoizeOne((list, offset) => {
   const listCopy = [...list];
   if (offset > 0) {
@@ -144,32 +152,49 @@ export const getLastDateOfMonth = (year, month) => {
   return lastDateOfCurrentMonth;
 };
 
-export const getDatesOfMonth = memoizeOne(function(year, month, start, end) {
-  const validStart = typeof start === 'number' ? start : 1;
-  const validEnd = typeof end === 'number' ? end : getLengthOfMonth(year, month) + 1;
-  const dateOfMonth = new Date(year, month);
-  const datesOfMonth = [];
-  for (let day = validStart; day < validEnd; day++) {
-    datesOfMonth.push(new Date(dateOfMonth.setDate(day)));
+/**
+ * @returns [startDate, ..., endDate]
+ */
+export const getDatesBetween = memoizeOne(function(startDate, endDate, step = '1:d') {
+  const [stepValue, stepUnit] = parseStep(step);
+  const dates = [];
+  for (
+    let start = moment(startDate), endValue = moment(endDate).toDate().valueOf();
+    start.toDate().valueOf() <= endValue;
+    start.add(stepValue, stepUnit)
+  ) {
+    dates.push(start.toDate());
   }
-  return datesOfMonth;
+  return dates;
 });
 
+export const getDatesOfMonth = memoizeOne(function(year, month, start, end) {
+  const validStart = typeof start === 'number' ? start : 1;
+  const validEnd = typeof end === 'number' ? end : getLengthOfMonth(year, month);
+  const startDate = new Date(year, month, validStart);
+  const endDate = new Date(year, month, validEnd);
+  return getDatesBetween(startDate, endDate);
+});
+
+/**
+ * @param weekDayOffset {number} range: [-6, 6]
+ */
 const getDatesOfPreviousMonthLastWeek = function(year, month, weekDayOffset = WEEK_DAY_OFFSET) {
-  const firstWeekDayOfMonth = (getFirstDateOfMonth(year, month).getDay() + weekDayOffset + WEEK_LENGTH) % WEEK_LENGTH;
-  const [nextYear, nextMonth] = getMonthByOffset(year, month, -1);
-  const lengthOfPreviousMonth = getLengthOfMonth(nextYear, nextMonth);
-  const end = lengthOfPreviousMonth + 1;
-  const start = end - firstWeekDayOfMonth;
-  return getDatesOfMonth(nextYear, nextMonth, start, end);
+  const daysOfPreviousMonth = (getFirstDateOfMonth(year, month).getDay() + weekDayOffset + WEEK_LENGTH) % WEEK_LENGTH;
+  const [targetYear, targetMonth] = getMonthByOffset(year, month, -1);
+  const lengthOfPreviousMonth = getLengthOfMonth(targetYear, targetMonth);
+  const endMonthDay = lengthOfPreviousMonth;
+  const startMonthDay = endMonthDay + 1 - daysOfPreviousMonth;
+  return getDatesOfMonth(targetYear, targetMonth, startMonthDay, endMonthDay);
 };
 
 const getDatesOfNextMonthFirstWeek = function(year, month, weekDayOffset = WEEK_DAY_OFFSET) {
-  const lastWeekDayOfMonth = (getLastDateOfMonth(year, month).getDay() + weekDayOffset + WEEK_LENGTH) % WEEK_LENGTH;
-  const start = 1;
-  const end = WEEK_LENGTH - lastWeekDayOfMonth;
-  const [nextYear, nextMonth] = getMonthByOffset(year, month, 1);
-  return getDatesOfMonth(nextYear, nextMonth, start, end);
+  const daysOfNextMonth =
+    WEEK_LENGTH - ((getLastDateOfMonth(year, month).getDay() + 1 + weekDayOffset + WEEK_LENGTH) % WEEK_LENGTH);
+  const monthStartDay = 1;
+  const monthEndDay = daysOfNextMonth % WEEK_LENGTH;
+  const [targetYear, targetMonth] = getMonthByOffset(year, month, 1);
+  return getDatesOfMonth(targetYear, targetMonth, monthStartDay, monthEndDay);
 };
 
 export const getDatesOfMonthlyCalendar = memoizeOne((year, month) => [
@@ -200,21 +225,21 @@ export function getHHmmDurationByMinute(HHmm) {
 }
 
 export function getStepDurationByMinute(step) {
-  const [stepValue, stepUnit] = step.split(':');
+  const [stepValue, stepUnit] = parseStep(step);
   const duration = moment.duration(stepValue, stepUnit);
   return duration.asMinutes();
 }
 
-export const getDayTimeLine = memoizeOne(function (start, end, step, formatString) {
-  const [stepValue, stepUnit] = step.split(':');
+export const getDayTimeLine = memoizeOne(function(start, end, step, formatString) {
+  const [stepValue, stepUnit] = parseStep(step);
   const [startHour, startMinute] = start.split(':');
   const [endHour, endMinute] = end.split(':');
   const startMoment = moment([2019, 0, 1, Number(startHour), Number(startMinute)]);
   const endMoment = moment([2019, 0, 1, Number(endHour), Number(endMinute)]);
   const timeLine = [];
-  for (let endMomentValue = endMoment.toDate().valueOf(); startMoment.toDate().valueOf() <= endMomentValue;) {
+  for (let endMomentValue = endMoment.toDate().valueOf(); startMoment.toDate().valueOf() <= endMomentValue; ) {
     timeLine.push(startMoment.format(formatString));
-    startMoment.add(Number(stepValue), stepUnit);
+    startMoment.add(stepValue, stepUnit);
   }
   return timeLine;
 });

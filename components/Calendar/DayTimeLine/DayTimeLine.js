@@ -18,8 +18,8 @@ export default class DayTimeLine extends React.PureComponent {
 
   render() {
     const { bgHeight } = this.state;
-    const { start, end, step, formatString, timeSuffix, children } = this.props;
-    let dayTimeLine = getDayTimeLine(start, end, step, formatString);
+    const { startHHmm, endHHmm, step, formatString, timeSuffix, children } = this.props;
+    let dayTimeLine = getDayTimeLine(startHHmm, endHHmm, step, formatString);
     if (timeSuffix) {
       const [am = 'AM', pm = 'PM'] = timeSuffix;
       dayTimeLine = dayTimeLine.map(time =>
@@ -45,7 +45,7 @@ export default class DayTimeLine extends React.PureComponent {
               <div key={time} className="ic-day-time-line__bg-row" />
             ))}
           </div>
-          <ChildrenWithProps start={start} end={end} step={step} containerHeight={bgHeight}>
+          <ChildrenWithProps startHHmm={startHHmm} endHHmm={endHHmm} step={step} containerHeight={bgHeight}>
             {children}
           </ChildrenWithProps>
         </div>
@@ -55,8 +55,8 @@ export default class DayTimeLine extends React.PureComponent {
 }
 
 DayTimeLine.defaultProps = {
-  start: '00:00',
-  end: '23:59',
+  startHHmm: '00:00',
+  endHHmm: '23:59',
   step: '15:m',
   formatString: 'hh:mm a',
   // timeSuffix: ['am', 'pm'],

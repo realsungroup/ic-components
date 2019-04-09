@@ -80,6 +80,7 @@
     "@babel/core": "^7.4.3",
     "@storybook/react": "^5.0.6",
     "awesome-typescript-loader": "^5.2.1",
+    "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.5",
     "babel-plugin-import": "^1.11.0",
     "css-loader": "^2.1.1",

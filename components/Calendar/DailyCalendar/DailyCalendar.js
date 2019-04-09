@@ -13,7 +13,7 @@ export default class DailyCalendar extends React.PureComponent {
   }
 
   render() {
-    const { events } = this.props;
+    const { events, startDate, endDate  } = this.props;
     const { headerRightWidth } = this.state;
     const headerRightStyle = { width: headerRightWidth };
 

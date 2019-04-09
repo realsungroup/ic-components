@@ -5,22 +5,22 @@ import { normalizeEvents } from '../../utils/eventUtil';
 
 export default class SingleDayView extends React.PureComponent {
   componentDidMount() {
-    const { start, end, containerHeight } = this.props;
-    this.reLayout(start, end, containerHeight);
+    const { startHHmm, endHHmm, containerHeight } = this.props;
+    this.reLayout(startHHmm, endHHmm, containerHeight);
   }
 
   componentDidUpdate() {
-    const { start, end, containerHeight } = this.props;
-    this.reLayout(start, end, containerHeight);
+    const { startHHmm, endHHmm, containerHeight } = this.props;
+    this.reLayout(startHHmm, endHHmm, containerHeight);
   }
 
-  reLayout = memoizeOne((start, end, containerHeight) => {
+  reLayout = memoizeOne((startHHmm, endHHmm, containerHeight) => {
     const { current } = this.rootRef;
     if (!current) {
       return;
     }
 
-    const totalMinutes = getHHmmDurationByMinute(end) - getHHmmDurationByMinute(start);
+    const totalMinutes = getHHmmDurationByMinute(endHHmm) - getHHmmDurationByMinute(startHHmm);
     const heightToMinutes = containerHeight / totalMinutes;
     const eventElements = current.children;
     Array.prototype.forEach.call(eventElements, element => {
