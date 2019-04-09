@@ -27,8 +27,7 @@ const tabs = [
 
 export default class Calendar extends React.PureComponent {
   static defaultProps = {
-    // defaultActiveTab: 'month',
-    defaultActiveTab: 'singleDay',
+    defaultActiveTab: 'month',
   };
 
   constructor(props) {

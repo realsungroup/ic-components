@@ -1,10 +1,35 @@
 .ic-daily-calendar {
-  width: auto;
+  &__top {
+    display: flex;
+
+    &-left {
+      flex-grow: 1;
+    }
+
+    &-right {
+      height: 100%;
+      border-left: solid 1px rgb(210, 190, 165);
+    }
+  }
+
+  &__header {
+    height: 56px;
+    border-bottom: solid 1px rgb(210, 190, 165);
+
+    &-right {
+      height: 100%;
+    }
+  }
+
+  &__all-events {
+    border-bottom: solid 1px rgb(210, 190, 165);
+  }
 
   &__day-views {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
+    border-left: solid 1px rgb(237, 228, 214);
   }
 }
