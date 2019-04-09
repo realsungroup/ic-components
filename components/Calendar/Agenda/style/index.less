@@ -4,6 +4,13 @@
   color: #a0917f;
   // background: url(../images/attachment.svg);
 
+  &__img {
+    display: inline-block;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
   &__flex {
     display: flex;
     align-items: center;
@@ -79,6 +86,23 @@
       img {
         width: 34px;
         height: 34px;
+      }
+    }
+
+    &__weather {
+      width: 34px;
+      height: 34px;
+
+      &-1 {
+        background-image: url(../images/icon-tq01.svg);
+      }
+
+      &-2 {
+        background-image: url(../images/icon-tq02.svg);
+      }
+
+      &-3 {
+        background-image: url(../images/icon-tq03.svg);
       }
     }
 
@@ -170,11 +194,12 @@
     &__event-attachment {
       text-align: right;
 
-      /* margin-bottom: 8px; */
-      img {
+      a {
+        background-image: url(../images/attachment.svg);
         width: 18px;
         height: 18px;
       }
+      /* margin-bottom: 8px; */
     }
 
     &__event-image {

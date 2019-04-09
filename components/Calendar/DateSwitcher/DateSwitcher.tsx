@@ -3,8 +3,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import leftArrow from './images/arrow-left.svg';
-import rightArrow from './images/arrow-right.svg';
 
 export default class DateSwitcher extends React.PureComponent<any, any> {
   static propTypes = {
@@ -64,11 +62,11 @@ export default class DateSwitcher extends React.PureComponent<any, any> {
     const { className } = this.props;
     return (
       <div className={classnames('ic-date-switcher', className)}>
-        {/* <img className="ic-date-switcher__arrow" src={leftArrow} onClick={this.switchBack} /> */}
+        <div className="ic-date-switcher__left-arrow" onClick={this.switchBack} />
         <div className="ic-date-switcher__text" onClick={this.switchToNow}>
           今天
         </div>
-        {/* <img className="ic-date-switcher__arrow" src={rightArrow} onClick={this.switchForward} /> */}
+        <div className="ic-date-switcher__right-arrow" onClick={this.switchForward} />
       </div>
     );
   }

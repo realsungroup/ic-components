@@ -7,18 +7,33 @@
   width: 134px;
   height: 36px;
 
-  &__arrow {
+  &__left-arrow,
+  &__right-arrow {
+    display: inline-block;
     height: 12px;
+    width: 12px;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  &__left-arrow,
+  &__right-arrow,
+  &__text {
+    cursor: pointer;
+  }
+
+  &__left-arrow {
+    background-image: url(../images/arrow-left.svg);
+  }
+
+  &__right-arrow {
+    background-image: url(../images/arrow-right.svg);
   }
 
   &__text {
     color: #a0917f;
     font-size: 16px;
     margin: 0 28px;
-  }
-
-  &__arrow,
-  &__text {
-    cursor: pointer;
   }
 }
