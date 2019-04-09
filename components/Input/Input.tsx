@@ -8,6 +8,10 @@ export default class Input extends React.Component<any, any> {
   state = {};
 
   render() {
-    return <input />;
+    return (
+      <div className="ic-input">
+        <input />
+      </div>
+    );
   }
 }
