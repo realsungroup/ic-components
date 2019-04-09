@@ -1,7 +1,6 @@
 {
   "name": "ic-components",
   "version": "0.1.0",
-  "private": true,
   "main": "./lib/index.js",
   "dependencies": {
     "antd": "^3.16.1",
