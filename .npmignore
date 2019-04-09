@@ -4,6 +4,7 @@ components/
 docs/
 node_modules/
 scripts/
+typings/
 
 .eslintignore
 .eslintrc.json
