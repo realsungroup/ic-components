@@ -3,6 +3,7 @@ import { storiesOf } from '@storybook/react';
 import Search from '../';
 
 import '../style/index.less';
+import './search.less';
 
 class SearchTest extends React.Component {
   state = {
@@ -18,7 +19,15 @@ class SearchTest extends React.Component {
 
   render() {
     const { value } = this.state;
-    return <Search placeholder="输入框" value={value} onChange={this.handleChange} onPressEnter={this.handleEnter} />;
+    return (
+      <Search
+        className="search-test"
+        placeholder="输入框"
+        value={value}
+        onChange={this.handleChange}
+        onPressEnter={this.handleEnter}
+      />
+    );
   }
 }
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import Input from '../Input';
 import omit from 'omit.js';
+import classNames from 'classnames';
 
 export default class Search extends React.Component<any, any> {
   static propTypes = {};
@@ -19,13 +20,13 @@ export default class Search extends React.Component<any, any> {
 
   render() {
     const searchSuffix = <span className="ic-input-search__icon" />;
-    const restProps = omit(this.props, ['onPressEnter']);
-
+    const restProps = omit(this.props, ['onPressEnter', 'className']);
+    const classes = classNames('ic-input-search', this.props.className);
     return (
       <Input
         {...restProps}
         onPressEnter={this.handlePressEnter}
-        className="ic-input-search"
+        className={classes}
         type="text"
         suffix={searchSuffix}
       />
