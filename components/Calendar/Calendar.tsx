@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
-import { getDateSectionOfMultiDay } from '../utils/dateUtil';
+import { getDateSectionOfMultiDay, getDatesOfMonthlyCalendar, parseStep } from '../utils/dateUtil';
 import Tab from './Tab';
 import DatePicker from './DatePicker';
 import DateSwitcher from './DateSwitcher';
@@ -33,14 +33,16 @@ const dateSwitchSteps = {
 export default class Calendar extends React.PureComponent<any, any> {
   static defaultProps = {
     defaultActiveTab: 'month',
-    agendaDefaultDateRange: '1:M',
+    defaultMultiDays: 3,
+    defaultAgendaDateRange: '1:M',
+    onDateRangeChange: (dateRange) => { console.log(dateRange) }, // mock
   };
   switchSteps: { singleDay: string; multiDay: string; singleWeek: string; multiWeek: string; month: string; year: string; agenda: string; };
 
   constructor(props) {
     super(props);
 
-    const { defaultActiveTab, agendaDefaultDateRange } = props;
+    const { defaultActiveTab, defaultAgendaDateRange, defaultMultiDays } = props;
 
     const now = moment();
     this.state = {
@@ -48,22 +50,63 @@ export default class Calendar extends React.PureComponent<any, any> {
       date: now.toDate(),
       activeTab: defaultActiveTab,
       dateSwitchStep: this.getDateSwitchStep(defaultActiveTab),
-      agendaDateRange: agendaDefaultDateRange,
+      agendaDateRange: defaultAgendaDateRange,
+      multiDays: defaultMultiDays,
     };
   }
 
-  getDateSwitchStep(activeTab) {
-    if (activeTab === 'agenda') {
+  getDateSwitchStep = (activeTab) => {
+    switch (activeTab) {
+    case 'agenda':
       return this.state.agendaDateRange;
+    default:
+      return dateSwitchSteps[activeTab] || '1:M';
     }
-    return dateSwitchSteps[activeTab] || '1:M';
+  }
+
+  getDateRange = (activeTab) => {
+    const { date } = this.state;
+    switch (activeTab) {
+    case 'agenda': {
+      const { agendaDateRange }  = this.state;
+      const [stepValue, stepUnit] = parseStep(agendaDateRange);
+      const start = moment(date).hour(0).minute(0).second(0).millisecond(0);
+      const end = moment(start).add(stepValue, stepUnit).subtract(1, 'ms');
+      return [start.toDate(), end.toDate()];
+    }
+    case 'singleDay': {
+      const dayStartDate = new Date(date);
+      dayStartDate.setHours(0, 0, 0, 0)
+      const dayEndDate = new Date(date);
+      dayEndDate.setHours(23, 59, 59, 999)
+      return [dayStartDate, dayEndDate];
+    }
+    case 'multiDay': {
+      const { multiDays }  = this.state;
+      const [startDateOfMultiDay, endDateOfMultiDay] = getDateSectionOfMultiDay(date, multiDays);
+      const multiDayStartDate = (new Date(startDateOfMultiDay));
+      multiDayStartDate.setHours(0, 0, 0, 0)
+      const multiDayEndDate = (new Date(endDateOfMultiDay));
+      multiDayEndDate.setHours(23, 59, 59, 999)
+      return [multiDayStartDate, multiDayEndDate];
+    }
+    case 'month':
+    default: {
+      const dates = getDatesOfMonthlyCalendar(date.getFullYear(), date.getMonth());
+      const monthStartDate = new Date(dates[0]);
+      monthStartDate.setHours(0, 0, 0, 0)
+      const monthEndDate = new Date(dates[dates.length - 1]);
+      monthEndDate.setHours(23, 59, 59, 999)
+      return [monthStartDate, monthEndDate];
+    }
+    }
   }
 
   handleDateChange = value => {
     if (value) {
       this.setState({
         date: value.toDate(),
-      });
+      }, this.handleDateRangeChange);
     }
   };
 
@@ -71,7 +114,7 @@ export default class Calendar extends React.PureComponent<any, any> {
     if (value) {
       this.setState({
         date: value,
-      });
+      }, this.handleDateRangeChange);
     }
   };
 
@@ -79,19 +122,36 @@ export default class Calendar extends React.PureComponent<any, any> {
     this.setState({
       activeTab: key,
       dateSwitchStep: this.getDateSwitchStep(key),
+    }, this.handleDateRangeChange);
+  };
+
+  handleAgendaDateRangeChange = value => {
+    this.setState({ agendaDateRange: value }, () => {
+      this.setState({ dateSwitchStep: this.getDateSwitchStep('agenda')});
+      this.handleDateRangeChange();
     });
   };
 
-  handleAgendaRangeChange = value => {
-    this.setState({ agendaDateRange: value }, () => {
-      this.setState({ dateSwitchStep: this.getDateSwitchStep('agenda')});
-    })
-  };
+  handleDateRangeChange = () => {
+    const { onDateRangeChange } = this.props;
+    if (typeof onDateRangeChange === 'function') {
+      const { activeTab } = this.state;
+      const dateRange = this.getDateRange(activeTab);
+      onDateRangeChange(dateRange)
+    }
+  }
 
   render() {
     const { events } = this.props;
-    const { date, datePickerDefaultValue, activeTab, dateSwitchStep } = this.state;
-    const [startDateOfMultiDay, endDateOfMultiDay] = getDateSectionOfMultiDay(date, 3);
+    const {
+      date,
+      datePickerDefaultValue,
+      activeTab,
+      dateSwitchStep,
+      agendaDateRange,
+      multiDays,
+    } = this.state;
+    const [startDateOfMultiDay, endDateOfMultiDay] = getDateSectionOfMultiDay(date, multiDays);
 
     return (
       <div className="ic-calendar">
@@ -128,7 +188,12 @@ export default class Calendar extends React.PureComponent<any, any> {
         {activeTab === 'year' && '年'}
         {activeTab === 'agenda' && (
           <ViewContainer>
-            <Agenda startDate={date} defaultRange="1:M" onRangeChange={this.handleAgendaRangeChange} events={events} />
+            <Agenda
+              startDate={date}
+              dateRange={agendaDateRange}
+              onDateRangeChange={this.handleAgendaDateRangeChange}
+              events={events}
+            />
           </ViewContainer>
         )}
         {activeTab === 'plan' && '计划'}

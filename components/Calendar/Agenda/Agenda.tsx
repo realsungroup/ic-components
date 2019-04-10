@@ -36,17 +36,22 @@ const rangeOptions = [
 ];
 
 export default class Agenda extends React.PureComponent<any, any> {
-  state = {
-    detailVisible: false,
-    importantOnly: false,
-    weatherVisible: false,
-    dateRange: this.props.defaultRange,
-  };
+  constructor(props) {
+    super(props);
+    const { defaultDateRange, dateRange } = props
+
+    this.state = {
+      detailVisible: false,
+      importantOnly: false,
+      weatherVisible: false,
+      dateRange:dateRange || defaultDateRange,
+    };
+  }
 
   handleRangeChange = value => {
+    const { onDateRangeChange } = this.props;
     this.setState({ dateRange: value });
-    const { onRangeChange } = this.props;
-    typeof onRangeChange === 'function' && onRangeChange(value);
+    typeof onDateRangeChange === 'function' && onDateRangeChange(value);
   };
 
   handleCheckboxChange = (event, stateField) => {
@@ -67,15 +72,16 @@ export default class Agenda extends React.PureComponent<any, any> {
   };
 
   render() {
-    const { events, startDate } = this.props;
-    const { dateRange, detailVisible, importantOnly, weatherVisible } = this.state;
+    const { events, startDate, dateRange: propDateRange } = this.props;
+    const { dateRange: stateDateRange, detailVisible, importantOnly, weatherVisible } = this.state;
+    const dateRange = propDateRange || stateDateRange;
 
     return (
       <div className="ic-agenda">
         <div className="ic-agenda__header">
           <div className="ic-agenda__date-range">
             <div className="ic-agenda__date-range-label">日期范围</div>
-            <Select onChange={this.handleRangeChange} defaultValue={dateRange}>
+            <Select onChange={this.handleRangeChange} value={dateRange}>
               {rangeOptions.map(({ label, value }) => (
                 <Option key={value} value={value}>
                   {label}
