@@ -45,11 +45,17 @@ export default class Calendar extends React.PureComponent<any, any> {
     const { defaultActiveTab, defaultAgendaDateRange, defaultMultiDays } = props;
 
     const now = moment();
+    let dateSwitchStep;
+    if (defaultActiveTab === 'agenda') {
+      dateSwitchStep = defaultAgendaDateRange;
+    } else {
+      dateSwitchStep = this.getDateSwitchStep(defaultActiveTab);
+    }
     this.state = {
       datePickerDefaultValue: now,
       date: now.toDate(),
       activeTab: defaultActiveTab,
-      dateSwitchStep: this.getDateSwitchStep(defaultActiveTab),
+      dateSwitchStep,
       agendaDateRange: defaultAgendaDateRange,
       multiDays: defaultMultiDays,
     };
