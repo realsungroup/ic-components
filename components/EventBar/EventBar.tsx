@@ -6,7 +6,7 @@ export default class EventBar extends React.Component<any, any> {
   static propTypes = {
     bgColor: PropTypes.string, // 背景色
     color: PropTypes.string, // 字体颜色
-    children: PropTypes.oneOfType([PropTypes.func, PropTypes.number]), // children
+    children: PropTypes.oneOfType([PropTypes.func, PropTypes.node]), // children
     width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]), // 宽度
     height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]), // 高度
   };
