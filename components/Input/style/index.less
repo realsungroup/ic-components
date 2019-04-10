@@ -1,11 +1,33 @@
+@import '../../style/index.less';
 .ic-input {
   display: inline-block;
-  min-width: 100px;
-  input {
+  width: 200px;
+  height: 30px;
+  border: 1px solid @border-color;
+  outline: none;
+  &:focus {
+    outline: none;
+  }
+  transition: 0.3s;
+  border-radius: 14px;
+  padding: 0 16px;
+  &-wrap {
+    position: relative;
+    display: inline-block;
+    width: 200px;
+    height: 30px;
+    border: 1px solid @border-color;
+    outline: none;
     &:focus {
       outline: none;
-      border: 1px solid #f00;
     }
     transition: 0.3s;
+    border-radius: 14px;
+  }
+  &--has-suffix {
+    border: none;
+    height: 28px;
+    width: 168px;
+    padding: 0 0 0 16px;
   }
 }

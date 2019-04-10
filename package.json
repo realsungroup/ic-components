@@ -4,11 +4,14 @@
   "main": "./lib/index.js",
   "dependencies": {
     "antd": "^3.16.1",
+    "ic-components": "^0.1.0",
     "less": "^3.9.0",
     "less-loader": "^4.1.0",
     "lodash": "^4.17.11",
     "memoize-one": "^5.0.2",
     "moment": "^2.24.0",
+    "omit.js": "^1.0.1",
+    "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "typescript": "^3.4.2"
