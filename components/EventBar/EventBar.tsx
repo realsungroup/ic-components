@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 export default class EventBar extends React.Component<any, any> {
   static propTypes = {
@@ -32,10 +33,11 @@ export default class EventBar extends React.Component<any, any> {
   };
 
   render() {
-    const { color, bgColor, width, height, style } = this.props;
+    const { color, bgColor, width, height, style, className, ...restProps } = this.props;
 
+    const classes = classNames('ic-event-bar', className);
     return (
-      <div className="ic-event-bar" style={{ background: bgColor, color, width, height, ...style }}>
+      <div className={classes} style={{ background: bgColor, color, width, height, ...style }} {...restProps}>
         {this.renderChildren()}
       </div>
     );

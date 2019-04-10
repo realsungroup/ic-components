@@ -8,7 +8,7 @@ import './EventBar.less';
 class EventBarTest extends React.Component {
   render() {
     return (
-      <EventBar bgColor="#43d1e3" color="#fff" width={200} >
+      <EventBar bgColor="#43d1e3" color="#fff" width={200} className="event-bar-test">
         <div>Tom</div>
         <div>Tom</div>
       </EventBar>
