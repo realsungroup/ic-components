@@ -10,11 +10,6 @@ import MonthlyCalendar from './MonthlyCalendar';
 import Agenda from './Agenda';
 import DailyCalendar from './DailyCalendar';
 
-const switchStepForMonthly = {
-  unit: 'month',
-  value: 1,
-};
-
 const tabs = [
   { key: 'singleDay', label: '单日', },
   { key: 'multiDay', label: '多日' },
@@ -26,29 +21,42 @@ const tabs = [
   { key: 'plan', label: '计划' },
 ];
 
-const switchSteps = {
+const dateSwitchSteps = {
   singleDay: '1:d',
   multiDay: '3:d',
   singleWeek: '1:w',
   multiWeek: '4:w',
   month: '1:M',
   year: '1:y',
-}
+};
 
 export default class Calendar extends React.PureComponent<any, any> {
   static defaultProps = {
     defaultActiveTab: 'month',
+    agendaDefaultDateRange: '1:M',
   };
+  switchSteps: { singleDay: string; multiDay: string; singleWeek: string; multiWeek: string; month: string; year: string; agenda: string; };
 
   constructor(props) {
     super(props);
+
+    const { defaultActiveTab, agendaDefaultDateRange } = props;
 
     const now = moment();
     this.state = {
       datePickerDefaultValue: now,
       date: now.toDate(),
-      activeTab: props.defaultActiveTab,
+      activeTab: defaultActiveTab,
+      dateSwitchStep: this.getDateSwitchStep(defaultActiveTab),
+      agendaDateRange: agendaDefaultDateRange,
     };
+  }
+
+  getDateSwitchStep(activeTab) {
+    if (activeTab === 'agenda') {
+      return this.state.agendaDateRange;
+    }
+    return dateSwitchSteps[activeTab] || '1:M';
   }
 
   handleDateChange = value => {
@@ -68,16 +76,21 @@ export default class Calendar extends React.PureComponent<any, any> {
   };
 
   handleTabSwitch = key => {
-    this.setState({ activeTab: key });
+    this.setState({
+      activeTab: key,
+      dateSwitchStep: this.getDateSwitchStep(key),
+    });
   };
 
   handleAgendaRangeChange = value => {
-    console.log(value);
+    this.setState({ agendaDateRange: value }, () => {
+      this.setState({ dateSwitchStep: this.getDateSwitchStep('agenda')});
+    })
   };
 
   render() {
     const { events } = this.props;
-    const { date, datePickerDefaultValue, activeTab } = this.state;
+    const { date, datePickerDefaultValue, activeTab, dateSwitchStep } = this.state;
     const [startDateOfMultiDay, endDateOfMultiDay] = getDateSectionOfMultiDay(date, 3);
 
     return (
@@ -86,7 +99,7 @@ export default class Calendar extends React.PureComponent<any, any> {
           <div className="ic-calendar__date-pickers">
             <DateSwitcher
               className="ic-calendar__date-switcher"
-              step={switchSteps[activeTab] || '1:M'}
+              step={dateSwitchStep}
               value={date}
               onChange={this.handleDateSwitch}
             />
