@@ -14,6 +14,7 @@ export const mockEvents = [
     event_weather: 1,
     event_attach: ['附件', 'http://www.baidu.com'],
     event_important: 1,
+    category_name: '分类1',
   },
   {
     occur_id: 2, // 事件发生编号（唯一）
@@ -30,6 +31,7 @@ export const mockEvents = [
     event_weather: 2,
     event_attach: ['附件', 'http://www.baidu.com'],
     event_important: 0,
+    category_name: '分类1',
   },
   {
     occur_id: 3, // 事件发生编号（唯一）
@@ -44,6 +46,7 @@ export const mockEvents = [
     event_endtime: '15:00',
     event_weather: 2,
     event_important: 1,
+    category_name: '分类2',
   },
   {
     occur_id: 4, // 事件发生编号（唯一）
@@ -60,6 +63,7 @@ export const mockEvents = [
     event_weather: 3,
     event_attach: ['附件', 'http://www.baidu.com'],
     event_important: 0,
+    category_name: '分类2',
   },
   {
     occur_id: 5, // 事件发生编号（唯一）
@@ -74,6 +78,7 @@ export const mockEvents = [
     event_endtime: '21:00',
     event_weather: 3,
     event_important: 1,
+    category_name: '分类3',
   },
   {
     occur_id: 6, // 事件发生编号（唯一）
@@ -88,5 +93,6 @@ export const mockEvents = [
     event_endtime: '23:45',
     event_weather: 3,
     event_important: 1,
+    category_name: '分类3',
   },
 ];

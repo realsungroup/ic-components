@@ -8,7 +8,7 @@ import { parseStep } from '../../utils/dateUtil';
 
 export default class DateSwitcher extends React.PureComponent<any, any> {
   static propTypes = {
-    step: PropTypes.string.isRequired,
+    step: PropTypes.string.isRequired, // 向前向后的步长
   };
 
   static defaultProps = {

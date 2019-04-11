@@ -18,12 +18,14 @@
   },
   "scripts": {
     "dev": "start-storybook",
+    "deploy-storybook": "storybook-to-ghpages",
     "compile": "antd-tools run compile"
   },
   "devDependencies": {
     "@babel/core": "^7.4.3",
     "@storybook/addon-info": "^5.0.6",
     "@storybook/react": "^5.0.5",
+    "@storybook/storybook-deployer": "^2.8.1",
     "@types/jest": "^24.0.11",
     "@types/storybook__react": "^4.0.1",
     "antd-tools": "^7.3.0",

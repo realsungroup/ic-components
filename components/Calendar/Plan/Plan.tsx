@@ -7,6 +7,7 @@ import ChildrenWithProps from '../../ChildrenWithProps';
 import DayTimeLine from '../DayTimeLine';
 import SingleDayView from '../SingleDayView';
 import MonthDayView from '../MonthDayView';
+import PropTypes from 'prop-types';
 
 function allDayEventsFilter(event) {
   return isTotalDayEvent(event);
@@ -16,7 +17,19 @@ function notAllDayEventsFilter(event) {
   return !isTotalDayEvent(event);
 }
 
-export default class DailyCalendar extends React.PureComponent<any, any> {
+export default class Plan extends React.PureComponent<any, any> {
+  static propTypes = {
+    /**
+     * 选择的日期
+     */
+    selectedDate: PropTypes.object,
+
+    /**
+     * 分类的日历事件
+     */
+    events: PropTypes.array,
+  };
+
   state = {
     sideWidth: 0,
     sideHeight: 0,
@@ -60,10 +73,10 @@ export default class DailyCalendar extends React.PureComponent<any, any> {
   };
 
   render() {
-    const { events, startDate, endDate } = this.props;
+    const { events, selectedDate } = this.props;
     const { sideWidth, sideHeight, today, rootWidth } = this.state;
     const eventsMap = allocateDailyEvents(events);
-    const dates = getDatesBetween(startDate, endDate);
+    const dates = getDatesBetween(selectedDate, selectedDate);
     const datesLength = dates.length;
     const topSideStyle = { width: sideWidth };
     const singleDayWidth = Math.floor((rootWidth - sideWidth) / datesLength);
@@ -87,6 +100,15 @@ export default class DailyCalendar extends React.PureComponent<any, any> {
             ))}
           </div>
         </div>
+
+        <div className="ic-plan__classify">
+          <div style={topSideStyle} className="ic-plan__classify-left" />
+
+          {events.map(eventItem => (
+            <div className="ic-plan__classify-item">{eventItem.type}</div>
+          ))}
+        </div>
+
         <div className="ic-daily-calendar__top">
           <div style={topSideStyle} className="ic-daily-calendar__top-left" />
           <div className="ic-daily-calendar__top-right ic-daily-calendar__all-day-events">
@@ -112,9 +134,19 @@ export default class DailyCalendar extends React.PureComponent<any, any> {
             ))}
           </div>
         </div>
+
         <DayTimeLine onGetSideElement={this.handleGetSideElement}>
           <ChildrenWithProps className="ic-daily-calendar__day-views">
-            {dates.map(date => (
+            {/* {dates.map(date => (
+              <SingleDayView
+                key={date.valueOf()}
+                events={eventsMap.get(monthDayHasher(date))}
+                eventsFilter={notAllDayEventsFilter}
+                date={date}
+                style={{ width: singleDayWidth, height: sideHeight }}
+              />
+            ))} */}
+            {events.map(date => (
               <SingleDayView
                 key={date.valueOf()}
                 events={eventsMap.get(monthDayHasher(date))}

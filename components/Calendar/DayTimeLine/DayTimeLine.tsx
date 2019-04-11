@@ -1,9 +1,43 @@
 import React from 'react';
 import { getDayTimeLine } from '../../utils/dateUtil';
 import ChildrenWithProps from '../../ChildrenWithProps';
+import PropTypes from 'prop-types';
 
 export default class DayTimeLine extends React.PureComponent<any, any> {
-  static defaultProps: any;
+  static propTypes = {
+    /**
+     * 开始时间
+     * 默认：'00:00'
+     */
+    startHHmm: PropTypes.string,
+
+    /**
+     * 结束时间
+     * 默认：'23:59'
+     */
+    endHHmm: PropTypes.string,
+
+    /**
+     * 时间步长
+     * 默认：'15:m'，即 15 分钟为一个步长
+     */
+    step: PropTypes.string,
+
+    /**
+     * 时间格式
+     * 默认：'hh:mm a'
+     */
+    formatString: PropTypes.string,
+  };
+
+  static defaultProps = {
+    startHHmm: '00:00',
+    endHHmm: '23:59',
+    step: '15:m',
+    formatString: 'hh:mm a',
+    // timeSuffix: ['am', 'pm'],
+  };
+
   state = {
     bgHeight: undefined,
   };
@@ -34,7 +68,7 @@ export default class DayTimeLine extends React.PureComponent<any, any> {
 
     return (
       <div className="ic-day-time-line">
-        <div ref={this.sideRef} className="ic-day-time-line__left">
+        <div ref={this.sideRef} className="ic-day-time-line__time-list">
           <div>
             {dayTimeLine.map(time => (
               <div key={time} className="ic-day-time-line__label-row">
@@ -43,7 +77,7 @@ export default class DayTimeLine extends React.PureComponent<any, any> {
             ))}
           </div>
         </div>
-        <div ref={this.bgRef} className="ic-day-time-line__right">
+        <div ref={this.bgRef} className="ic-day-time-line__event-list">
           <div>
             {dayTimeLine.map(time => (
               <div key={time} className="ic-day-time-line__bg-row" />
@@ -57,11 +91,3 @@ export default class DayTimeLine extends React.PureComponent<any, any> {
     );
   }
 }
-
-DayTimeLine.defaultProps = {
-  startHHmm: '00:00',
-  endHHmm: '23:59',
-  step: '15:m',
-  formatString: 'hh:mm a',
-  // timeSuffix: ['am', 'pm'],
-};
