@@ -41,7 +41,6 @@ export default class SingleDayView extends React.PureComponent<any, any> {
     const totalMinutes = getHHmmDurationByMinute(endHHmm) - getHHmmDurationByMinute(startHHmm);
     const heightToMinutes = containerHeight / totalMinutes;
     const eventElements = current.children;
-    console.log({ eventElements });
 
     Array.prototype.forEach.call(eventElements, element => {
       const eventStart = element.getAttribute('data-event_time');
@@ -51,8 +50,6 @@ export default class SingleDayView extends React.PureComponent<any, any> {
       const eventTotalMinutes = endMinutes - startMinutes;
       const elementTop = startMinutes * heightToMinutes * 0.9992;
       const elementHeight = (eventTotalMinutes * containerHeight * 0.9992) / totalMinutes;
-
-      console.log({ elementHeight });
 
       element.style.top = `${elementTop}px`;
       element.style.height = `${elementHeight}px`;

@@ -117,7 +117,7 @@ export default class Plan extends React.PureComponent<any, any> {
           <div style={topSideStyle} className="ic-plan__classify-left" />
 
           {events.map(eventItem => (
-            <div className="ic-plan__classify-item" style={{ width: singleClassifyWidth }}>
+            <div key={eventItem.type} className="ic-plan__classify-item" style={{ width: singleClassifyWidth }}>
               {eventItem.type}
             </div>
           ))}
@@ -154,6 +154,7 @@ export default class Plan extends React.PureComponent<any, any> {
           <ChildrenWithProps className="ic-plan__single-classify-wrap">
             {eventsWithEventsMap.map(event => (
               <SingleDayView
+                key={event.type}
                 events={event.eventsMap.get(monthDayHasher(selectedDate))}
                 eventsFilter={notAllDayEventsFilter}
                 date={selectedDate}
