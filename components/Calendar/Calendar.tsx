@@ -78,7 +78,7 @@ export default class Calendar extends React.PureComponent<any, any> {
     defaultMultiDays: 3,
     defaultAgendaDateRange: '1:M',
     onDateRangeChange: dateRange => {
-      console.log(dateRange);
+      // console.log(dateRange);
     }, // mock
   };
   switchSteps: {

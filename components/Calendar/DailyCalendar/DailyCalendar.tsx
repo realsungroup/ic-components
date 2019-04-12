@@ -12,6 +12,7 @@ function allDayEventsFilter(event) {
   return isTotalDayEvent(event);
 }
 
+// 不是全天事件
 function notAllDayEventsFilter(event) {
   return !isTotalDayEvent(event);
 }

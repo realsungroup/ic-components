@@ -120,9 +120,9 @@ export const getMonthByOffset = (year, month, offset) => {
 
 export const getDaysToLastDayOfWeek = date => {
   const weekDay = date.getDay();
-  const weekDays = getWeekDayIdsByOffset()
+  const weekDays = getWeekDayIdsByOffset();
   return (weekDays[WEEK_LENGTH - 1] - weekDay + WEEK_LENGTH) % WEEK_LENGTH;
-}
+};
 
 export const isFirstDateOfWeek = date => {
   const weekDay = date.getDay();
@@ -134,6 +134,10 @@ export const isLastDateOfWeek = date => {
   return getWeekDayIdsByOffset().indexOf(weekDay) === WEEK_LENGTH - 1;
 };
 
+/**
+ * 日期的时分秒都设为 0
+ * @param date Date 实例
+ */
 export const monthDayHasher = date => {
   if (!date) {
     return undefined;
@@ -165,7 +169,10 @@ export const getDatesBetween = memoizeOne(function(startDate, endDate, step = '1
   const [stepValue, stepUnit] = parseStep(step);
   const dates = [];
   for (
-    let start = moment(startDate), endValue = moment(endDate).toDate().valueOf();
+    let start = moment(startDate),
+      endValue = moment(endDate)
+        .toDate()
+        .valueOf();
     start.toDate().valueOf() <= endValue;
     start.add(stepValue, stepUnit)
   ) {
@@ -177,7 +184,14 @@ export const getDatesBetween = memoizeOne(function(startDate, endDate, step = '1
 export const getDateSectionOfMultiDay = memoizeOne(function(today: Date, days: number) {
   const leftDays = Math.floor(days / 2);
   const rightDays = days - leftDays - 1;
-  return [moment(today).subtract(leftDays, 'd').toDate(), moment(today).add(rightDays, 'd').toDate()];
+  return [
+    moment(today)
+      .subtract(leftDays, 'd')
+      .toDate(),
+    moment(today)
+      .add(rightDays, 'd')
+      .toDate(),
+  ];
 });
 
 export const getDatesOfMonth = memoizeOne(function(year, month, start, end) {

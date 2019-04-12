@@ -3,6 +3,11 @@ import { getDayTimeLine } from '../../utils/dateUtil';
 import ChildrenWithProps from '../../ChildrenWithProps';
 import PropTypes from 'prop-types';
 
+/**
+ * 一天的时间线组件，包含两部分：
+ * 1. 左侧的 “时分” 时间列表
+ * 2. 右侧的 row 背景
+ */
 export default class DayTimeLine extends React.PureComponent<any, any> {
   static propTypes = {
     /**
@@ -78,11 +83,12 @@ export default class DayTimeLine extends React.PureComponent<any, any> {
           </div>
         </div>
         <div ref={this.bgRef} className="ic-day-time-line__event-list">
-          <div>
+          <div className="ic-day-time-line__bg">
             {dayTimeLine.map(time => (
               <div key={time} className="ic-day-time-line__bg-row" />
             ))}
           </div>
+          {/* 渲染事件 */}
           <ChildrenWithProps startHHmm={startHHmm} endHHmm={endHHmm} step={step} containerHeight={bgHeight}>
             {children}
           </ChildrenWithProps>

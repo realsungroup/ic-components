@@ -29,13 +29,17 @@ export const normalizeEvents = memoizeOne(events =>
     .sort(compareEvents)
 );
 
+/**
+ * 分配事件：将事件以某天归类
+ * @param events 事件
+ * @return eventsMap 归好类的 eventsMap
+ */
 export const allocateDailyEvents = memoizeOne(events => {
   const validEvents = normalizeEvents(events);
   const eventsMap = new Map();
 
   const allocateEvent = event => {
     const { startTime, endTime } = event;
-    let calcStartTime = startTime;
     const eventKey = monthDayHasher(startTime);
     const eventsOfDate = eventsMap.get(eventKey);
     if (!eventsOfDate) {
@@ -44,6 +48,8 @@ export const allocateDailyEvents = memoizeOne(events => {
       eventsOfDate.push(event);
     }
 
+    // 开始日期不等于结束日期时
+    let calcStartTime = startTime;
     while (calcStartTime.getDate() !== endTime.getDate()) {
       calcStartTime = new Date(calcStartTime);
       calcStartTime.setDate(calcStartTime.getDate() + 1);
@@ -72,7 +78,7 @@ export const getEventDuration = (event, type) => {
   }
 };
 
-export const filterEventsByImportance = memoizeOne(function (events, importantOnly) {
+export const filterEventsByImportance = memoizeOne(function(events, importantOnly) {
   if (!importantOnly) {
     return events;
   }
@@ -102,7 +108,12 @@ export const getEventsGroupsInDateRange = memoizeOne((groups, startDateValue, en
   groups.filter(({ monthDayHash }) => monthDayHash >= startDateValue && monthDayHash <= endDateValue)
 );
 
-export const isTotalDayEvent = (event) => {
+/**
+ * 是否是全天事件
+ * @param {object} event 事件
+ * @return {boolean} 是全天事件，返回 true；否则返回 false
+ */
+export const isTotalDayEvent = event => {
   const { event_time, event_endtime } = event.original;
   return event_time === '00:00' && event_endtime === '23:59';
 };

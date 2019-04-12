@@ -51,8 +51,8 @@ export default class Plan extends React.PureComponent<any, any> {
   };
 
   isFirstDayOfSection = (date: Date) => {
-    const { startDate } = this.props;
-    return date.getDate() === startDate.getDate();
+    const { selectedDate } = this.props;
+    return date.getDate() === selectedDate.getDate();
   };
 
   getDaysToLastDayOfSection = (date: Date) => {
@@ -72,17 +72,28 @@ export default class Plan extends React.PureComponent<any, any> {
     return end.diff(start, 'days');
   };
 
+  getEventsMap = events => {
+    return events.map(event => ({
+      ...event,
+      eventsMap: allocateDailyEvents(event.events),
+    }));
+  };
+
   render() {
     const { events, selectedDate } = this.props;
     const { sideWidth, sideHeight, today, rootWidth } = this.state;
-    const eventsMap = allocateDailyEvents(events);
+    const eventsWithEventsMap = this.getEventsMap(events);
     const dates = getDatesBetween(selectedDate, selectedDate);
     const datesLength = dates.length;
     const topSideStyle = { width: sideWidth };
     const singleDayWidth = Math.floor((rootWidth - sideWidth) / datesLength);
 
+    const classifyLength = events.length;
+    const singleClassifyWidth = Math.floor((rootWidth - sideWidth) / classifyLength);
+
     return (
       <div className="ic-daily-calendar" ref={this.rootRef}>
+        {/* 头部日期 */}
         <div className="ic-daily-calendar__top ic-daily-calendar__header">
           <div style={topSideStyle} className="ic-daily-calendar__top-left" />
           <div className="ic-daily-calendar__top-right ic-daily-calendar__header-right">
@@ -101,34 +112,38 @@ export default class Plan extends React.PureComponent<any, any> {
           </div>
         </div>
 
+        {/* 分类 */}
         <div className="ic-plan__classify">
           <div style={topSideStyle} className="ic-plan__classify-left" />
 
           {events.map(eventItem => (
-            <div className="ic-plan__classify-item">{eventItem.type}</div>
+            <div className="ic-plan__classify-item" style={{ width: singleClassifyWidth }}>
+              {eventItem.type}
+            </div>
           ))}
         </div>
 
         <div className="ic-daily-calendar__top">
           <div style={topSideStyle} className="ic-daily-calendar__top-left" />
+          {/* 全天事件 */}
           <div className="ic-daily-calendar__top-right ic-daily-calendar__all-day-events">
-            {dates.map(date => (
+            {eventsWithEventsMap.map(event => (
               <div
-                key={date.valueOf()}
+                key={event.type}
                 className="ic-daily-calendar__all-day-event-container"
-                style={{ width: singleDayWidth }}
+                style={{ width: singleClassifyWidth, float: 'left' }}
               >
                 <MonthDayView
-                  params={eventsMap}
+                  params={event.eventsMap}
                   eventsFilter={allDayEventsFilter}
-                  date={date}
+                  date={selectedDate}
                   dayElementWidth={singleDayWidth}
                   dateVisible={false}
                   dotVisible={false}
                   eventsLimit={null}
                   isFirstDayOfSection={this.isFirstDayOfSection}
                   getDaysToLastDayOfSection={this.getDaysToLastDayOfSection}
-                  style={{ height: 'auto', width: singleDayWidth }}
+                  style={{ height: 'auto', width: singleClassifyWidth }}
                 />
               </div>
             ))}
@@ -136,23 +151,13 @@ export default class Plan extends React.PureComponent<any, any> {
         </div>
 
         <DayTimeLine onGetSideElement={this.handleGetSideElement}>
-          <ChildrenWithProps className="ic-daily-calendar__day-views">
-            {/* {dates.map(date => (
+          <ChildrenWithProps className="ic-plan__single-classify-wrap">
+            {eventsWithEventsMap.map(event => (
               <SingleDayView
-                key={date.valueOf()}
-                events={eventsMap.get(monthDayHasher(date))}
+                events={event.eventsMap.get(monthDayHasher(selectedDate))}
                 eventsFilter={notAllDayEventsFilter}
-                date={date}
-                style={{ width: singleDayWidth, height: sideHeight }}
-              />
-            ))} */}
-            {events.map(date => (
-              <SingleDayView
-                key={date.valueOf()}
-                events={eventsMap.get(monthDayHasher(date))}
-                eventsFilter={notAllDayEventsFilter}
-                date={date}
-                style={{ width: singleDayWidth, height: sideHeight }}
+                date={selectedDate}
+                style={{ width: singleClassifyWidth, height: sideHeight, float: 'left' }}
               />
             ))}
           </ChildrenWithProps>
