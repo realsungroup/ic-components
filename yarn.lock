@@ -1435,6 +1435,22 @@
     react-lifecycles-compat "^3.0.4"
     util-deprecate "^1.0.2"
 
+"@storybook/addon-viewport@^5.0.7":
+  version "5.0.7"
+  resolved "http://registry.npm.taobao.org/@storybook/addon-viewport/download/@storybook/addon-viewport-5.0.7.tgz#a766234ce67b998faee9254396a0fa86e7732678"
+  integrity sha1-p2YjTOZ7mY+u6SVDlqD6hudzJng=
+  dependencies:
+    "@storybook/addons" "5.0.7"
+    "@storybook/client-logger" "5.0.7"
+    "@storybook/components" "5.0.7"
+    "@storybook/core-events" "5.0.7"
+    "@storybook/theming" "5.0.7"
+    core-js "^2.6.5"
+    global "^4.3.2"
+    memoizerific "^1.11.3"
+    prop-types "^15.6.2"
+    util-deprecate "^1.0.2"
+
 "@storybook/addons@5.0.7":
   version "5.0.7"
   resolved "http://registry.npm.taobao.org/@storybook/addons/download/@storybook/addons-5.0.7.tgz#2663cb384a0c840e74dc34d738b4f8173b58a0e5"
