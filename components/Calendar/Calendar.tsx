@@ -2,13 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
-import { Select } from 'antd';
-import {
-  getDateSectionOfMultiDay,
-  getDateSectionOfSingleWeek,
-  getMultiWeeks,
-  parseStep,
-} from '../utils/dateUtil';
+import { Select, Dropdown } from 'antd';
+import { getDateSectionOfMultiDay, getDateSectionOfSingleWeek, getMultiWeeks, parseStep } from '../utils/dateUtil';
 import Tab from './Tab';
 import DatePicker from './DatePicker';
 import DateSwitcher from './DateSwitcher';
@@ -17,6 +12,7 @@ import MonthlyCalendar from './MonthlyCalendar';
 import Agenda from './Agenda';
 import DailyCalendar from './DailyCalendar';
 import Plan from './Plan';
+import enquire from 'enquire.js';
 
 const { Option } = Select;
 
@@ -39,6 +35,10 @@ const dateSwitchSteps = {
   month: '1:M',
   year: '1:y',
 };
+
+function getTabLabelByKey(tabs, key) {
+  return tabs.find(tab => tab.key === key).label;
+}
 
 export default class Calendar extends React.PureComponent<any, any> {
   static propTypes = {
@@ -136,8 +136,27 @@ export default class Calendar extends React.PureComponent<any, any> {
       agendaDateRange: defaultAgendaDateRange,
       multiDays: defaultMultiDays,
       multiWeeks: defaultMultiWeeks,
+      switchComponent: 'Tab', // 切换 “单日”、“多日” 等，使用的组件；'Tab' 表示使用 Tab 组件；'Dropdown' 表示使用下拉组件
     };
   }
+
+  componentDidMount = () => {
+    console.log('111');
+    // 小于 768 px 时，使用下拉菜单组件；否则使用 Tab 组件
+    enquire.register('screen and (max-width:768px)', {
+      match: () => {
+        console.log('dropdown');
+        this.setState({ switchComponent: 'Dropdown' });
+      },
+      unmatch: () => {
+        console.log('tab');
+
+        this.setState({ switchComponent: 'Tab' });
+      },
+      // Keep a empty destory to avoid triggering unmatch when unregister
+      destroy() {},
+    });
+  };
 
   private agendaSwitchStep: string; // 议程切换步长
   private planSwitchStep: string; // 计划切换步长
@@ -269,7 +288,7 @@ export default class Calendar extends React.PureComponent<any, any> {
 
   handleMultiWeeksChange = n => {
     this.setState({ multiWeeks: n });
-  }
+  };
 
   handleDateRangeChange = () => {
     const { onDateRangeChange } = this.props;
@@ -279,6 +298,15 @@ export default class Calendar extends React.PureComponent<any, any> {
       onDateRangeChange(dateRange);
     }
   };
+  menu = (
+    <div className="ic-calendar__dropdown-menu">
+      {tabs.map(tab => (
+        <div className="ic-calendar__dropdown-menu-item" key={tab.key} onClick={() => this.handleTabSwitch(tab.key)}>
+          {tab.label}
+        </div>
+      ))}
+    </div>
+  );
 
   render() {
     const { events, singleWeekStartDay } = this.props;
@@ -290,6 +318,7 @@ export default class Calendar extends React.PureComponent<any, any> {
       agendaDateRange,
       multiDays,
       multiWeeks,
+      switchComponent,
     } = this.state;
     const [startDateOfMultiDay, endDateOfMultiDay] = getDateSectionOfMultiDay(date, multiDays);
     const weekDayOffset = -singleWeekStartDay;
@@ -311,14 +340,22 @@ export default class Calendar extends React.PureComponent<any, any> {
               <div className="ic-calendar__multi-weeks-select">
                 <Select value={multiWeeks} onChange={this.handleMultiWeeksChange}>
                   {this.multiWeeksOptions.map(n => (
-                    <Option key={n} value={n}>{n}</Option>
+                    <Option key={n} value={n}>
+                      {n}
+                    </Option>
                   ))}
                 </Select>
                 <span>周</span>
               </div>
             )}
           </div>
-          <Tab onChange={this.handleTabSwitch} tabs={tabs} activeKey={activeTab} />
+          {switchComponent === 'Tab' ? (
+            <Tab onChange={this.handleTabSwitch} tabs={tabs} activeKey={activeTab} />
+          ) : (
+            <Dropdown overlay={this.menu}>
+              <div className="ic-calendar__dropdown">{getTabLabelByKey(tabs, activeTab)}</div>
+            </Dropdown>
+          )}
         </div>
 
         {activeTab === 'singleDay' && (

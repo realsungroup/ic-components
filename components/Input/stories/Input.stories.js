@@ -1,5 +1,6 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
+import { withInfo } from '@storybook/addon-info';
 import Input from '../';
 
 import '../style/index.less';
@@ -18,4 +19,4 @@ class InputTest extends React.Component {
   }
 }
 
-storiesOf('Input 输入框', module).add('输入框', () => <InputTest />);
+storiesOf('Input 输入框', module).addDecorator(withInfo).add('输入框', () => <InputTest />);

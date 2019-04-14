@@ -4,6 +4,7 @@
   "main": "./lib/index.js",
   "dependencies": {
     "antd": "^3.16.1",
+    "enquire.js": "^2.1.6",
     "ic-components": "^0.1.0",
     "less": "^3.9.0",
     "less-loader": "^4.1.0",
