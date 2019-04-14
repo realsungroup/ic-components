@@ -1,9 +1,12 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
+import { actions } from '@storybook/addon-actions';
 import Search from '../';
 
 import '../style/index.less';
 import './search.less';
+
+const eventsFromNames = actions('onChange', 'onPressEnter');
 
 class SearchTest extends React.Component {
   state = {
@@ -19,15 +22,7 @@ class SearchTest extends React.Component {
 
   render() {
     const { value } = this.state;
-    return (
-      <Search
-        className="search-test"
-        placeholder="输入框"
-        value={value}
-        onChange={this.handleChange}
-        onPressEnter={this.handleEnter}
-      />
-    );
+    return <Search className="search-test" placeholder="输入框" value={value} {...eventsFromNames} />;
   }
 }
 
