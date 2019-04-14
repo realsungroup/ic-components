@@ -353,9 +353,9 @@ const groupDatesByWeek = (dates: [Date]) => {
  * @param weeks {number}
  * @returns [[Date]]
  */
-export const getWeeksFrom = memoizeOne((function(date: Date, weeks: number, weekDayOffset = WEEK_DAY_OFFSET) {
+export const getMultiWeeks = memoizeOne((function(date: Date, weeks: number, weekDayOffset = WEEK_DAY_OFFSET) {
   const firstDateOfFirstWeek = getFirstDateOfWeek(date, weekDayOffset);
-  const lastDateOfLastWeek = moment(firstDateOfFirstWeek).add(weeks, 'w').endOf('week');
+  const lastDateOfLastWeek = moment(firstDateOfFirstWeek).add(weeks - 1, 'w').endOf('week');
   const dates = getDatesBetween(firstDateOfFirstWeek, lastDateOfLastWeek);
   return groupDatesByWeek(dates);
 }));

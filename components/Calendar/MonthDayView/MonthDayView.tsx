@@ -15,6 +15,7 @@ const constructPadding = ({ top, bottom, left, right }) =>
 
 export default class MonthDayView extends React.PureComponent<any, any> {
   static defaultProps = {
+    grayDayOfOtherMonths: true,
     dateVisible: true,
     dotVisible: true,
     eventsLimit: 3,
@@ -51,6 +52,7 @@ export default class MonthDayView extends React.PureComponent<any, any> {
 
   render() {
     const {
+      grayDayOfOtherMonths,
       date,
       calendarActiveDate,
       params: eventsMap,
@@ -75,7 +77,7 @@ export default class MonthDayView extends React.PureComponent<any, any> {
         {dateVisible && <div
           className={classnames('ic-month-day-view__month-day', {
             [`ic-month-day-view__month-day-active`]: isActive,
-            [`ic-month-day-view__other-month-day`]: isDateOfOtherMonth,
+            [`ic-month-day-view__other-month-day`]: isDateOfOtherMonth && grayDayOfOtherMonths,
             [`ic-month-day-view__weekend`]: isWeekend,
           })}
         >

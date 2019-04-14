@@ -34,10 +34,17 @@ export default class MonthlyCalendarBody extends React.PureComponent<any, any> {
 
   render() {
     const { calendarElement } = this.state;
-    const { className, date: propDate, dayViewParams, dayViewComponent: DayViewComponent } = this.props;
+    const {
+      className,
+      grayDayOfOtherMonths,
+      date: propDate,
+      dayViewParams,
+      dayViewComponent: DayViewComponent,
+      weeks: customWeeks,
+    } = this.props;
     const year = propDate.getFullYear();
     const month = propDate.getMonth();
-    const weeks = getWeeksOfMonth(year, month);
+    const weeks = customWeeks || getWeeksOfMonth(year, month);
     const dayElementWidth = this.getDayElementWidth();
 
     return (
@@ -52,6 +59,7 @@ export default class MonthlyCalendarBody extends React.PureComponent<any, any> {
                 calendarActiveDate={propDate}
                 calendarElement={calendarElement}
                 dayElementWidth={dayElementWidth}
+                grayDayOfOtherMonths={grayDayOfOtherMonths}
               />
             ))}
           </div>
