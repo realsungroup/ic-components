@@ -18,10 +18,13 @@ function notAllDayEventsFilter(event) {
 }
 
 export default class DailyCalendar extends React.PureComponent<any, any> {
+  static defaultProps = {
+    activeDate: new Date(),
+  }
+
   state = {
     sideWidth: 0,
     sideHeight: 0,
-    today: new Date(),
     rootWidth: 0,
   };
 
@@ -61,8 +64,8 @@ export default class DailyCalendar extends React.PureComponent<any, any> {
   };
 
   render() {
-    const { events, startDate, endDate } = this.props;
-    const { sideWidth, sideHeight, today, rootWidth } = this.state;
+    const { events, startDate, endDate, activeDate } = this.props;
+    const { sideWidth, sideHeight, rootWidth } = this.state;
     const eventsMap = allocateDailyEvents(events);
     const dates = getDatesBetween(startDate, endDate);
     const datesLength = dates.length;
@@ -78,7 +81,8 @@ export default class DailyCalendar extends React.PureComponent<any, any> {
               <div
                 key={date.valueOf()}
                 className={classnames('ic-daily-calendar__day-title', {
-                  ['ic-daily-calendar__day-title-today']: datesLength > 1 && date.getDate() === today.getDate(),
+                  ['ic-daily-calendar__day-title-active']:
+                    datesLength > 1 && date.getDate() === (activeDate).getDate(),
                 })}
                 style={{ width: singleDayWidth }}
               >

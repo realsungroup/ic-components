@@ -59,7 +59,7 @@ export default class DayTimeLine extends React.PureComponent<any, any> {
 
   render() {
     const { bgHeight } = this.state;
-    const { startHHmm, endHHmm, step, formatString, timeSuffix, children, sideWidth } = this.props;
+    const { startHHmm, endHHmm, step, formatString, timeSuffix, children } = this.props;
     let dayTimeLine = getDayTimeLine(startHHmm, endHHmm, step, formatString);
     if (timeSuffix) {
       const [am = 'AM', pm = 'PM'] = timeSuffix;

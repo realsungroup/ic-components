@@ -23,16 +23,14 @@ export default class SingleDayView extends React.PureComponent<any, any> {
   };
 
   componentDidMount() {
-    const { startHHmm, endHHmm, containerHeight } = this.props;
-    this.reLayout(startHHmm, endHHmm, containerHeight);
+    this.reLayout()
   }
 
   componentDidUpdate() {
-    const { startHHmm, endHHmm, containerHeight } = this.props;
-    this.reLayout(startHHmm, endHHmm, containerHeight);
+    this.reLayout()
   }
 
-  reLayout = (startHHmm, endHHmm, containerHeight) => {
+  reLayoutEvents (startHHmm, endHHmm, containerHeight) {
     const { current } = this.rootRef;
     if (!current) {
       return;
@@ -54,7 +52,16 @@ export default class SingleDayView extends React.PureComponent<any, any> {
       element.style.top = `${elementTop}px`;
       element.style.height = `${elementHeight}px`;
     });
-  };
+  }
+
+  memoizedReLayoutEvents = memoizeOne((_events, startHHmm, endHHmm, containerHeight) => {
+    this.reLayoutEvents(startHHmm, endHHmm, containerHeight);
+  })
+
+  reLayout() {
+    const { events, startHHmm, endHHmm, containerHeight } = this.props;
+    this.memoizedReLayoutEvents(events, startHHmm, endHHmm, containerHeight);
+  }
 
   rootRef: any = React.createRef();
 

@@ -2,7 +2,7 @@ import React from 'react';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import 'moment/locale/zh-cn';
-import { getDateSectionOfMultiDay, getDatesOfMonthlyCalendar, parseStep } from '../utils/dateUtil';
+import { getDateSectionOfMultiDay, getDateSectionOfSingleWeek, getDatesOfMonthlyCalendar, parseStep } from '../utils/dateUtil';
 import Tab from './Tab';
 import DatePicker from './DatePicker';
 import DateSwitcher from './DateSwitcher';
@@ -80,7 +80,9 @@ export default class Calendar extends React.PureComponent<any, any> {
     onDateRangeChange: dateRange => {
       // console.log(dateRange);
     }, // mock
+    singleWeekStartDay: 1,
   };
+
   switchSteps: {
     singleDay: string;
     multiDay: string;
@@ -177,12 +179,12 @@ export default class Calendar extends React.PureComponent<any, any> {
     }
     case 'multiDay': {
       const { multiDays } = this.state;
-      const [startDateOfMultiDay, endDateOfMultiDay] = getDateSectionOfMultiDay(date, multiDays);
-      const multiDayStartDate = new Date(startDateOfMultiDay);
-      multiDayStartDate.setHours(0, 0, 0, 0);
-      const multiDayEndDate = new Date(endDateOfMultiDay);
-      multiDayEndDate.setHours(23, 59, 59, 999);
-      return [multiDayStartDate, multiDayEndDate];
+      return getDateSectionOfMultiDay(date, multiDays);
+    }
+    case 'singleWeek': {
+      const { singleWeekStartDay } = this.props;
+      const weekDayOffset = -singleWeekStartDay;
+      return getDateSectionOfSingleWeek(date, weekDayOffset);
     }
     case 'month':
     default: {
@@ -245,9 +247,11 @@ export default class Calendar extends React.PureComponent<any, any> {
   };
 
   render() {
-    const { events } = this.props;
+    const { events, singleWeekStartDay } = this.props;
     const { date, datePickerDefaultValue, activeTab, dateSwitchStep, agendaDateRange, multiDays } = this.state;
     const [startDateOfMultiDay, endDateOfMultiDay] = getDateSectionOfMultiDay(date, multiDays);
+    const weekDayOffset = -singleWeekStartDay;
+    const [startDateOfSingleWeek, endDateOfSingleWeek] = getDateSectionOfSingleWeek(date, weekDayOffset);
 
     return (
       <div className="ic-calendar">
@@ -271,10 +275,14 @@ export default class Calendar extends React.PureComponent<any, any> {
         )}
         {activeTab === 'multiDay' && (
           <ViewContainer>
-            <DailyCalendar startDate={startDateOfMultiDay} endDate={endDateOfMultiDay} events={events} />
+            <DailyCalendar activeDate={date} startDate={startDateOfMultiDay} endDate={endDateOfMultiDay} events={events} />
           </ViewContainer>
         )}
-        {activeTab === 'singleWeek' && '单周'}
+        {activeTab === 'singleWeek' && (
+          <ViewContainer>
+            <DailyCalendar activeDate={date} startDate={startDateOfSingleWeek} endDate={endDateOfSingleWeek} events={events} />
+          </ViewContainer>
+        )}
         {activeTab === 'multiWeek' && '多周'}
         {activeTab === 'month' && (
           <ViewContainer>
