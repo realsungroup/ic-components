@@ -26,9 +26,12 @@
   }
 
   &__date-pickers {
-    display: flex;
-    align-items: center;
+    // display: flex;
+    // align-items: center;
     margin-bottom: 20px;
+    & > div {
+      float: left;
+    }
   }
 
   &__date-switcher {
@@ -71,6 +74,28 @@
 
     .ant-select-arrow {
       margin-top: -8px;
+    }
+  }
+  &__dropdown {
+    padding: 0 18px;
+    border: solid 1px #d2bea5;
+    font-size: 16px;
+    color: #a0917f;
+    height: 36px;
+    line-height: 36px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    &-menu {
+      border: solid 1px #d2bea5;
+      border-radius: 6px;
+      background: rgb(245, 245, 245);
+      cursor: pointer;
+      &-item {
+        padding: 0 18px;
+        color: #a0917f;
+        line-height: 28px;
+      }
     }
   }
 }
