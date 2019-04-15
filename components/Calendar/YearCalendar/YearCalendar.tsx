@@ -2,7 +2,7 @@ import React from 'react';
 import classnames from 'classnames';
 import { getWeekDayIdsByOffset, getDatesOfYearCalendar, getLengthOfMonth } from '../../utils/dateUtil';
 import { allocateDailyEvents } from '../../utils/eventUtil';
-import MonthDayView from '../MonthDayView';
+import Row from './Row';
 
 const weekDayIds = getWeekDayIdsByOffset();
 const weekDayIdLabelMap = {
@@ -61,33 +61,15 @@ export default class YearCalendar extends React.PureComponent<any, any> {
           ))}
         </div>
         {dates.map((datesOfMonth, month) => (
-          <div key={month} className="ic-year-calendar__row">
-            <div className="ic-year-calendar__row-title">{`${month + 1}月`}</div>
-            {datesOfMonth.map(monthDay => (
-              <div className="ic-year-calendar__row-content">
-                {monthDay && (
-                  <MonthDayView
-                    params={eventsMap}
-                    date={monthDay}
-                    dayElementWidth={singleDayWidth}
-                    dateVisible={false}
-                    dotVisible={false}
-                    hostAvatarVisible={false}
-                    eventsLimit={null}
-                    isFirstDayOfSection={this.isFirstDayOfSection}
-                    getDaysToLastDayOfSection={(date) => this.getDaysToLastDayOfSection(date, month)}
-                    style={{ height: 'auto' }}
-                    paddingConfig={{
-                      top: 1,
-                      bottom: 1,
-                      left: 0,
-                      right: 6,
-                    }}
-                  />
-                )}
-              </div>
-            ))}
-          </div>
+          <Row
+            key={month}
+            datesOfMonth={datesOfMonth}
+            month={month}
+            eventsMap={eventsMap}
+            singleDayWidth={singleDayWidth}
+            isFirstDayOfSection={this.isFirstDayOfSection}
+            getDaysToLastDayOfSection={this.getDaysToLastDayOfSection}
+          />
         ))}
       </div>
     )
