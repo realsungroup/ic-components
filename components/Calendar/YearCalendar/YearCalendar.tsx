@@ -23,10 +23,12 @@ export default class YearCalendar extends React.PureComponent<any, any> {
 
   componentDidMount() {
     const year = this.props.date.getFullYear();
-    const [_dates, maxDaysOfMonth] = getDatesOfYearCalendar(year);
+    const [dates, maxDaysOfMonth] = getDatesOfYearCalendar(year);
     const { headerRef, headerTitleRef } = this;
+    const rowTitleWidth = headerTitleRef.current.offsetWidth;
+    const rowWidth = headerRef.current.offsetWidth;
     this.setState({
-      singleDayWidth: Math.floor((headerRef.current.offsetWidth - headerTitleRef.current.offsetWidth) / maxDaysOfMonth),
+      singleDayWidth: Math.floor((rowWidth - rowTitleWidth) / maxDaysOfMonth),
     })
   }
 
@@ -53,7 +55,7 @@ export default class YearCalendar extends React.PureComponent<any, any> {
         <div ref={this.headerRef} className={classnames('ic-year-calendar__row', 'ic-year-calendar__header')}>
           <div ref={this.headerTitleRef} className="ic-year-calendar__row-title">{date.getFullYear()}</div>
           {headerWeeks.slice(0, maxDaysOfMonth).map((weekDayId: number) => (
-            <div style={{ width: singleDayWidth }} className={classnames('ic-year-calendar__row-content', 'ic-year-calendar__header-content')}>
+            <div className={classnames('ic-year-calendar__row-content', 'ic-year-calendar__header-content')}>
               {weekDayIdLabelMap[`${weekDayId}`]}
             </div>
           ))}
@@ -62,7 +64,7 @@ export default class YearCalendar extends React.PureComponent<any, any> {
           <div key={month} className="ic-year-calendar__row">
             <div className="ic-year-calendar__row-title">{`${month + 1}月`}</div>
             {datesOfMonth.map(monthDay => (
-              <div className="ic-year-calendar__row-content" style={{ width: singleDayWidth }}>
+              <div className="ic-year-calendar__row-content">
                 {monthDay && (
                   <MonthDayView
                     params={eventsMap}
@@ -74,7 +76,7 @@ export default class YearCalendar extends React.PureComponent<any, any> {
                     eventsLimit={null}
                     isFirstDayOfSection={this.isFirstDayOfSection}
                     getDaysToLastDayOfSection={(date) => this.getDaysToLastDayOfSection(date, month)}
-                    style={{ height: 'auto', width: singleDayWidth, paddingLeft: 0 }}
+                    style={{ height: 'auto' }}
                     paddingConfig={{
                       top: 1,
                       bottom: 1,

@@ -11,7 +11,7 @@ const dayElementPadding = {
 };
 
 const constructPadding = ({ top, bottom, left, right }) =>
-  `${top}px ${right || 0}px ${bottom || top}px ${left || right}px`;
+  `${top}px ${right}px ${bottom}px ${left}px`;
 
 export default class MonthDayView extends React.PureComponent<any, any> {
   static defaultProps = {
