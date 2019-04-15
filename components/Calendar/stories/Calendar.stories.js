@@ -6,23 +6,46 @@ import 'antd/dist/antd.css';
 
 import '../style/index.less';
 
-storiesOf('Calendar 日历', module)
-  .add('文档', () => (
-    <div style={{ height: '100vh', padding: '20px 40px', background: '#f5f5f5', overflowY: 'auto' }}>文档组件</div>
-  ))
-  .add('单日', () => (
-    <div style={{ height: '100vh', padding: '20px 40px', background: '#f5f5f5', overflowY: 'auto' }}>
+const stories = storiesOf('Calendar 日历', module);
+
+const DesktopWrap = ({ children }) => {
+  return (
+    <div style={{ height: '100vh', padding: '20px 40px', background: '#f5f5f5', overflowY: 'auto' }}>{children}</div>
+  );
+};
+
+stories
+  .add('单日（PC 端）', () => (
+    <DesktopWrap>
       <Calendar events={mockEvents} defaultActiveTab="singleDay" />
-    </div>
+    </DesktopWrap>
   ))
-  .add('多日', () => (
+  .add(
+    '单日（移动端）',
+    () => (
+      <div>
+        <Calendar events={mockEvents} defaultActiveTab="singleDay" />
+      </div>
+    ),
+    { viewport: { defaultViewport: 'iphone5' } }
+  )
+  .add('多日（PC 端）', () => (
     <div style={{ height: '100vh', padding: '20px 40px', background: '#f5f5f5', overflowY: 'auto' }}>
-      <Calendar events={mockEvents}  defaultActiveTab="multiDay"/>
+      <Calendar events={mockEvents} defaultActiveTab="multiDay" />
     </div>
   ))
+  .add(
+    '多日（移动端）',
+    () => (
+      <div>
+        <Calendar events={mockEvents} defaultActiveTab="multiDay" />
+      </div>
+    ),
+    { viewport: { defaultViewport: 'iphone5' } }
+  )
   .add('单周', () => (
     <div style={{ height: '100vh', padding: '20px 40px', background: '#f5f5f5', overflowY: 'auto' }}>
-      <Calendar events={mockEvents}  defaultActiveTab="singleWeek"/>
+      <Calendar events={mockEvents} defaultActiveTab="singleWeek" />
     </div>
   ))
   .add('多周', () => (
