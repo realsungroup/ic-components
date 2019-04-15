@@ -172,7 +172,7 @@ export const monthDayHasher = date => {
   }
   const dateCopy = new Date(date);
   dateCopy.setHours(0, 0, 0, 0);
-  return `${dateCopy.valueOf()}`;
+  return dateCopy.valueOf();
 };
 
 /**
