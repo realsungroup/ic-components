@@ -79,7 +79,7 @@ const weekDayNames = {
  * @param offset {number} section: [-6, 6]
  * @returns {Array}
  */
-const getWeekDayIdsByOffset = memoize((offset = WEEK_DAY_OFFSET) => cyclicMoveWeekDay(weekDayIds, offset));
+export const getWeekDayIdsByOffset = memoize((offset = WEEK_DAY_OFFSET) => cyclicMoveWeekDay(weekDayIds, offset));
 
 /**
  * @param weekDay {number|Date}
@@ -408,4 +408,34 @@ export const getDayTimeLine = memoizeOne(function(start, end, step, formatString
     startMoment.add(stepValue, stepUnit);
   }
   return timeLine;
+});
+
+export const getDatesOfYearCalendar = memoizeOne(year => {
+  const months = [];
+  let maxDaysOfMonth = 0;
+
+  for (let month = 0; month < 12; month++) {
+    const datesOfMonthCalendar = [
+      ...getDatesOfPreviousMonthLastWeek(year, month),
+      ...getDatesOfMonth(year, month),
+    ];
+    const dateInMonth = datesOfMonthCalendar[10];
+    for (let d = 0; d < 7; d++) {
+      if (datesOfMonthCalendar[d].getMonth() === dateInMonth.getMonth()) {
+        break;
+      }
+      datesOfMonthCalendar[d] = undefined;
+    }
+    if (maxDaysOfMonth < datesOfMonthCalendar.length) {
+      maxDaysOfMonth = datesOfMonthCalendar.length;
+    }
+    months.push(datesOfMonthCalendar);
+  }
+
+  months.forEach(month => {
+    for (let d = month.length; d < maxDaysOfMonth; d++) {
+      month.push(undefined);
+    }
+  });
+  return [months, maxDaysOfMonth];
 });

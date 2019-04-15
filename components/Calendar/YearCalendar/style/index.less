@@ -1,0 +1,56 @@
+.ic-year-calendar {
+  font-size: 14px;
+
+  &__row {
+    display: flex;
+    align-items: center;
+    min-height: 60px;
+
+    &:nth-child(odd) {
+      background: #fff;
+    }
+
+    &:nth-child(even) {
+      background: rgb(250, 247, 243);
+    }
+  }
+
+  &__row-title {
+    color: #a0917f;
+    width: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__row-content {
+    width: calc((100% - 64px) / 35);
+    min-height: 60px;
+
+    &:not(:last-child) {
+      border-right: solid 1px rgb(237, 228, 214);
+    }
+
+    &:nth-child(7n + 1) {
+      border-right: none;
+    }
+
+    &:nth-child(7n + 2) {
+      border-left: solid 3px rgb(237, 228, 214);
+    }
+  }
+
+  &__header {
+    height: 48px;
+    min-height: auto;
+    padding: 0;
+    border-bottom: solid 1px rgb(237, 228, 214);
+  }
+
+  &__header-content {
+    text-align: center;
+    height: 48px;
+    line-height: 48px;
+    min-height: auto;
+  }
+}

@@ -18,20 +18,22 @@ export default class MonthDayView extends React.PureComponent<any, any> {
     grayDayOfOtherMonths: true,
     dateVisible: true,
     dotVisible: true,
+    hostAvatarVisible: true,
     eventsLimit: 3,
     calendarActiveDate: new Date(),
     isFirstDayOfSection: isFirstDateOfWeek,
     getDaysToLastDayOfSection: getDaysToLastDayOfWeek,
     eventsFilter: () => true,
+    paddingConfig: dayElementPadding,
   }
 
   getEventElementWidth(event) {
-    const { dayElementWidth, getDaysToLastDayOfSection } = this.props;
+    const { dayElementWidth, getDaysToLastDayOfSection, paddingConfig } = this.props;
     if (!dayElementWidth) {
       return undefined;
     }
 
-    const { left, right } = dayElementPadding;
+    const { left, right } = paddingConfig;
     const daysToLastDayOfSection = getDaysToLastDayOfSection(event.startTime);
     const maxDurationByDay = daysToLastDayOfSection + 1
     const eventDurationByDay = getEventDuration(event, 'day');
@@ -58,9 +60,11 @@ export default class MonthDayView extends React.PureComponent<any, any> {
       params: eventsMap,
       dateVisible,
       dotVisible,
+      hostAvatarVisible,
       eventsLimit: propEventsLimit,
       eventsFilter,
       style,
+      paddingConfig,
     } = this.props;
 
     const eventKey = monthDayHasher(date);
@@ -73,7 +77,7 @@ export default class MonthDayView extends React.PureComponent<any, any> {
     const eventsLimit = propEventsLimit || eventsOfToday.length;
 
     return (
-      <div className="ic-month-day-view" style={{ padding: constructPadding(dayElementPadding), ...style }}>
+      <div className="ic-month-day-view" style={{ padding: constructPadding(paddingConfig), ...style }}>
         {dateVisible && <div
           className={classnames('ic-month-day-view__month-day', {
             [`ic-month-day-view__month-day-active`]: isActive,
@@ -98,7 +102,7 @@ export default class MonthDayView extends React.PureComponent<any, any> {
                 })}
                 style={eventElementStyle}
               >
-                <img src={event_hostheadurl} />
+                {hostAvatarVisible && <img src={event_hostheadurl} />}
                 <div
                   className="ic-month-day-view__event-bar"
                   style={{ background: category_color }}

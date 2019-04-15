@@ -16,6 +16,7 @@ import ViewContainer from './ViewContainer';
 import MonthlyCalendar from './MonthlyCalendar';
 import Agenda from './Agenda';
 import DailyCalendar from './DailyCalendar';
+import YearCalendar from './YearCalendar';
 import Plan from './Plan';
 
 const { Option } = Select;
@@ -217,6 +218,12 @@ export default class Calendar extends React.PureComponent<any, any> {
       multiWeekEndDate.setHours(23, 59, 59, 999);
       return [multiWeekStartDate, multiWeekEndDate];
     }
+    case 'year': {
+      const year = moment(date);
+      const yearStartDate = year.startOf('year').toDate();
+      const yearEndDate = year.endOf('year').toDate();
+      return [yearStartDate, yearEndDate];
+    }
     case 'month':
     default: {
       const monthDate = moment([date.getFullYear(), date.getMonth()]);
@@ -356,7 +363,11 @@ export default class Calendar extends React.PureComponent<any, any> {
             <MonthlyCalendar date={date} events={events} />
           </ViewContainer>
         )}
-        {activeTab === 'year' && '年'}
+        {activeTab === 'year' && (
+          <ViewContainer>
+            <YearCalendar date={date} events={events} />
+          </ViewContainer>
+        )}
         {activeTab === 'agenda' && (
           <ViewContainer>
             <Agenda
