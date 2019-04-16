@@ -60,11 +60,13 @@ export default class DayTimeLine extends React.PureComponent<any, any> {
       topEventRowRightRef: { current: topEventRowRightElement },
       titleRowRightRef: { current: titleRowRightElement },
     } = this;
-    const titleRowRightWidth = Array.prototype.reduce.call(
+    const titleRowRightElementWidth = titleRowRightElement.offsetWidth;
+    const titleRowRightElementChildrenWidth = Array.prototype.reduce.call(
       titleRowRightElement.children[0].children,
       (width, element) => width + element.offsetWidth,
       0,
     )
+    const titleRowRightWidth = Math.max(titleRowRightElementWidth, titleRowRightElementChildrenWidth);
     this.setState({
       mainViewHeight: mainViewElement.offsetHeight,
       topEventRowHeight: topEventRowRightElement.offsetHeight,
