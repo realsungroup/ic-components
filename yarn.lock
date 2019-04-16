@@ -1181,7 +1181,7 @@
   version "0.7.0"
   resolved "http://registry.npm.taobao.org/@sindresorhus/is/download/@sindresorhus/is-0.7.0.tgz#9a06f4f137ee84d7df0460c1fdb1135ffa6c50fd"
 
-"@storybook/addon-actions@^5.0.7":
+"@storybook/addon-actions@^5.0.8":
   version "5.0.8"
   resolved "http://registry.npm.taobao.org/@storybook/addon-actions/download/@storybook/addon-actions-5.0.8.tgz#85b74bd7c672d4e668830c7e7bc820f7c35daf2c"
   dependencies:
@@ -1200,7 +1200,7 @@
     react-inspector "^2.3.0"
     uuid "^3.3.2"
 
-"@storybook/addon-backgrounds@^5.0.7":
+"@storybook/addon-backgrounds@^5.0.8":
   version "5.0.8"
   resolved "http://registry.npm.taobao.org/@storybook/addon-backgrounds/download/@storybook/addon-backgrounds-5.0.8.tgz#ca473cddac3bfc671676a520c0a3e70ada2799b9"
   dependencies:
@@ -1215,7 +1215,7 @@
     react "^16.8.1"
     util-deprecate "^1.0.2"
 
-"@storybook/addon-centered@^5.0.7":
+"@storybook/addon-centered@^5.0.8":
   version "5.0.8"
   resolved "http://registry.npm.taobao.org/@storybook/addon-centered/download/@storybook/addon-centered-5.0.8.tgz#aea10fc45174c4e1a1ead9bbb49fb91f82273818"
   dependencies:
@@ -1223,7 +1223,7 @@
     global "^4.3.2"
     util-deprecate "^1.0.2"
 
-"@storybook/addon-info@^5.0.7":
+"@storybook/addon-info@^5.0.8":
   version "5.0.8"
   resolved "http://registry.npm.taobao.org/@storybook/addon-info/download/@storybook/addon-info-5.0.8.tgz#8e8922e8883127db7f05ad2b7c0417ce98228ecd"
   dependencies:
@@ -1243,7 +1243,7 @@
     react-lifecycles-compat "^3.0.4"
     util-deprecate "^1.0.2"
 
-"@storybook/addon-jest@^5.0.7":
+"@storybook/addon-jest@^5.0.8":
   version "5.0.8"
   resolved "http://registry.npm.taobao.org/@storybook/addon-jest/download/@storybook/addon-jest-5.0.8.tgz#f37a4c3e3548c8f1e4a33968db3a9637c8bf6dc2"
   dependencies:
@@ -1258,7 +1258,7 @@
     upath "^1.1.0"
     util-deprecate "^1.0.2"
 
-"@storybook/addon-knobs@^5.0.7":
+"@storybook/addon-knobs@^5.0.8":
   version "5.0.8"
   resolved "http://registry.npm.taobao.org/@storybook/addon-knobs/download/@storybook/addon-knobs-5.0.8.tgz#6d20e29e409839b6bbfcb7a6063dae683f88b619"
   dependencies:
@@ -1279,7 +1279,7 @@
     react-select "^2.3.0"
     util-deprecate "^1.0.2"
 
-"@storybook/addon-links@^5.0.7":
+"@storybook/addon-links@^5.0.8":
   version "5.0.8"
   resolved "http://registry.npm.taobao.org/@storybook/addon-links/download/@storybook/addon-links-5.0.8.tgz#2ab42a45641180677561ff8cb069c4bd0877b16a"
   dependencies:
@@ -1291,7 +1291,7 @@
     prop-types "^15.6.2"
     qs "^6.5.2"
 
-"@storybook/addon-notes@^5.0.7":
+"@storybook/addon-notes@^5.0.8":
   version "5.0.8"
   resolved "http://registry.npm.taobao.org/@storybook/addon-notes/download/@storybook/addon-notes-5.0.8.tgz#acf92d24ecc57beb6a58eccbf4689650b73f3668"
   dependencies:
@@ -1305,7 +1305,7 @@
     prop-types "^15.6.2"
     util-deprecate "^1.0.2"
 
-"@storybook/addon-storysource@^5.0.7":
+"@storybook/addon-storysource@^5.0.8":
   version "5.0.8"
   resolved "http://registry.npm.taobao.org/@storybook/addon-storysource/download/@storybook/addon-storysource-5.0.8.tgz#f5cd0fad04a1b462c3f7b4aa37dc3b76e71d7c3c"
   dependencies:
@@ -1321,7 +1321,7 @@
     react-syntax-highlighter "^8.0.1"
     regenerator-runtime "^0.12.1"
 
-"@storybook/addon-viewport@^5.0.7":
+"@storybook/addon-viewport@^5.0.8":
   version "5.0.8"
   resolved "http://registry.npm.taobao.org/@storybook/addon-viewport/download/@storybook/addon-viewport-5.0.8.tgz#56eaa3b75b5768c7b1b6f9e64562be56b459e35a"
   dependencies:
@@ -1506,7 +1506,7 @@
     pretty-hrtime "^1.0.3"
     regenerator-runtime "^0.12.1"
 
-"@storybook/react@^5.0.7":
+"@storybook/react@^5.0.8":
   version "5.0.8"
   resolved "http://registry.npm.taobao.org/@storybook/react/download/@storybook/react-5.0.8.tgz#9b73010e3f84c40dd3fcc91a30c32604a31051d3"
   dependencies:
