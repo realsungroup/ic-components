@@ -21,7 +21,7 @@ function notAllDayEventsFilter(event) {
 export default class DailyCalendar extends React.PureComponent<any, any> {
   static defaultProps = {
     activeDate: new Date(),
-  }
+  };
 
   isFirstDayOfSection = (date: Date) => {
     const { startDate } = this.props;
@@ -47,7 +47,7 @@ export default class DailyCalendar extends React.PureComponent<any, any> {
 
   getSingleDayWidth = (containerWidth, days) => {
     return Math.floor(containerWidth / days);
-  }
+  };
 
   getTitleRowRenderer = memoizeOne((dates, activeDate) => containerWidth => {
     const days = dates.length;
@@ -59,8 +59,7 @@ export default class DailyCalendar extends React.PureComponent<any, any> {
           <div
             key={date.valueOf()}
             className={classnames('ic-daily-calendar__day-title', {
-              ['ic-daily-calendar__day-title-active']:
-                days > 1 && date.getDate() === (activeDate).getDate(),
+              ['ic-daily-calendar__day-title-active']: days > 1 && date.getDate() === activeDate.getDate(),
             })}
             style={{ width: singleDayWidth }}
           >

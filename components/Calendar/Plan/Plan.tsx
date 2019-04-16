@@ -7,6 +7,7 @@ import ChildrenWithProps from '../../ChildrenWithProps';
 import DayTimeLine from '../DayTimeLine';
 import SingleDayView from '../SingleDayView';
 import MonthDayView from '../MonthDayView';
+import memoizeOne from 'memoize-one';
 import PropTypes from 'prop-types';
 
 function allDayEventsFilter(event) {
@@ -56,20 +57,109 @@ export default class Plan extends React.PureComponent<any, any> {
   };
 
   getDaysToLastDayOfSection = (date: Date) => {
-    const { endDate } = this.props;
-    const end = moment(endDate);
-    const start = moment(date);
-    end
-      .hour(0)
-      .minute(0)
-      .second(0)
-      .millisecond(0);
-    start
-      .hour(0)
-      .minute(0)
-      .second(0)
-      .millisecond(0);
-    return end.diff(start, 'days');
+    // const { endDate } = this.props;
+    // const end = moment(endDate);
+    // const start = moment(date);
+    // end
+    //   .hour(0)
+    //   .minute(0)
+    //   .second(0)
+    //   .millisecond(0);
+    // start
+    //   .hour(0)
+    //   .minute(0)
+    //   .second(0)
+    //   .millisecond(0);
+    // const result = end.diff(start, 'days');
+    const result = 0;
+    return result;
+  };
+
+  getSingleDayWidth = (containerWidth, days) => {
+    return Math.floor(containerWidth / days);
+  };
+
+  getTitleRowRenderer = memoizeOne((dates, activeDate) => containerWidth => {
+    const { events } = this.props;
+    const days = dates.length;
+    const singleDayWidth = events.length * containerWidth;
+
+    return (
+      <div className="ic-daily-calendar__top-right">
+        {dates.map(date => (
+          <div
+            key={date.valueOf()}
+            className={classnames('ic-daily-calendar__day-title', {
+              ['ic-daily-calendar__day-title-active']: days > 1 && date.getDate() === activeDate.getDate(),
+            })}
+            style={{ width: singleDayWidth }}
+          >
+            <div className="ic-daily-calendar__day-title-week">{getWeekDayName(date)}</div>
+            <div className="ic-daily-calendar__day-title-date">{`${date.getMonth() + 1}月${date.getDate()}日`}</div>
+          </div>
+        ))}
+      </div>
+    );
+  });
+
+  getClassifyRowRenderer = (dates, events) => containerWidth => {
+    const singleClassifyWidth = containerWidth;
+
+    return (
+      <div className="ic-plan__classify" style={{ width: containerWidth, overflowX: 'auto' }}>
+        {events.map(eventItem => (
+          <div
+            key={eventItem.type}
+            className="ic-plan__classify-item"
+            style={{ width: singleClassifyWidth / events.length }}
+          >
+            {eventItem.type}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  getEventRowRenderer = memoizeOne((dates, events) => containerWidth => {
+    const { events, selectedDate } = this.props;
+    const eventsWithEventsMap = this.getEventsMap(events);
+    const width = containerWidth / eventsWithEventsMap.length;
+
+    return eventsWithEventsMap.map(event => (
+      <div key={event.type} className="ic-daily-calendar__all-day-event-container" style={{ width, float: 'left' }}>
+        <MonthDayView
+          params={event.eventsMap}
+          eventsFilter={allDayEventsFilter}
+          date={selectedDate}
+          dayElementWidth={width}
+          dateVisible={false}
+          dotVisible={false}
+          eventsLimit={null}
+          isFirstDayOfSection={this.isFirstDayOfSection}
+          getDaysToLastDayOfSection={this.getDaysToLastDayOfSection}
+          style={{ height: 'auto', width }}
+        />
+      </div>
+    ));
+  });
+
+  getMainViewRenderer = (dates, events) => containerWidth => {
+    const { events, selectedDate } = this.props;
+    const eventsWithEventsMap = this.getEventsMap(events);
+    const width = containerWidth / eventsWithEventsMap.length;
+    return (
+      <ChildrenWithProps className="ic-plan__single-classify-wrap">
+        {eventsWithEventsMap.map(event => (
+          <SingleDayView
+            key={event.type}
+            events={event.eventsMap.get(monthDayHasher(selectedDate))}
+            eventsFilter={notAllDayEventsFilter}
+            date={selectedDate}
+            style={{ width, float: 'left' }}
+          />
+        ))}
+      </ChildrenWithProps>
+    );
   };
 
   getEventsMap = events => {
@@ -81,88 +171,16 @@ export default class Plan extends React.PureComponent<any, any> {
 
   render() {
     const { events, selectedDate } = this.props;
-    const { sideWidth, sideHeight, today, rootWidth } = this.state;
-    const eventsWithEventsMap = this.getEventsMap(events);
     const dates = getDatesBetween(selectedDate, selectedDate);
-    const datesLength = dates.length;
-    const topSideStyle = { width: sideWidth };
-    const singleDayWidth = Math.floor((rootWidth - sideWidth) / datesLength);
-
-    const classifyLength = events.length;
-    const singleClassifyWidth = Math.floor((rootWidth - sideWidth) / classifyLength);
-
     return (
       <div className="ic-daily-calendar" ref={this.rootRef}>
-        {/* 头部日期 */}
-        <div className="ic-daily-calendar__top ic-daily-calendar__header">
-          <div style={topSideStyle} className="ic-daily-calendar__top-left" />
-          <div className="ic-daily-calendar__top-right ic-daily-calendar__header-right">
-            {dates.map(date => (
-              <div
-                key={date.valueOf()}
-                className={classnames('ic-daily-calendar__day-title', {
-                  ['ic-daily-calendar__day-title-today']: datesLength > 1 && date.getDate() === today.getDate(),
-                })}
-                style={{ width: singleDayWidth }}
-              >
-                <div className="ic-daily-calendar__day-title-week">{getWeekDayName(date)}</div>
-                <div className="ic-daily-calendar__day-title-date">{`${date.getMonth() + 1}月${date.getDate()}日`}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* 分类 */}
-        <div className="ic-plan__classify">
-          <div style={topSideStyle} className="ic-plan__classify-left" />
-
-          {events.map(eventItem => (
-            <div key={eventItem.type} className="ic-plan__classify-item" style={{ width: singleClassifyWidth }}>
-              {eventItem.type}
-            </div>
-          ))}
-        </div>
-
-        <div className="ic-daily-calendar__top">
-          <div style={topSideStyle} className="ic-daily-calendar__top-left" />
-          {/* 全天事件 */}
-          <div className="ic-daily-calendar__top-right ic-daily-calendar__all-day-events">
-            {eventsWithEventsMap.map(event => (
-              <div
-                key={event.type}
-                className="ic-daily-calendar__all-day-event-container"
-                style={{ width: singleClassifyWidth, float: 'left' }}
-              >
-                <MonthDayView
-                  params={event.eventsMap}
-                  eventsFilter={allDayEventsFilter}
-                  date={selectedDate}
-                  dayElementWidth={singleDayWidth}
-                  dateVisible={false}
-                  dotVisible={false}
-                  eventsLimit={null}
-                  isFirstDayOfSection={this.isFirstDayOfSection}
-                  getDaysToLastDayOfSection={this.getDaysToLastDayOfSection}
-                  style={{ height: 'auto', width: singleClassifyWidth }}
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <DayTimeLine onGetSideElement={this.handleGetSideElement}>
-          <ChildrenWithProps className="ic-plan__single-classify-wrap">
-            {eventsWithEventsMap.map(event => (
-              <SingleDayView
-                key={event.type}
-                events={event.eventsMap.get(monthDayHasher(selectedDate))}
-                eventsFilter={notAllDayEventsFilter}
-                date={selectedDate}
-                style={{ width: singleClassifyWidth, height: sideHeight, float: 'left' }}
-              />
-            ))}
-          </ChildrenWithProps>
-        </DayTimeLine>
+        <DayTimeLine
+          renderTitleRow={this.getTitleRowRenderer(dates, events)}
+          renderEventRow={this.getEventRowRenderer(dates, events)}
+          renderMainView={this.getMainViewRenderer(dates, events)}
+          renderClassifyRow={this.getClassifyRowRenderer(dates, events)}
+          onGetSideElement={this.handleGetSideElement}
+        />
       </div>
     );
   }

@@ -52,6 +52,7 @@ export default class DayTimeLine extends React.PureComponent<any, any> {
   mainViewRef: any = React.createRef();
   topEventRowRightRef: any = React.createRef();
   titleRowRightRef: any = React.createRef();
+  classifyRowRightRef: any = React.createRef();
 
   componentDidMount() {
     const { onContentWidthChange } = this.props;
@@ -64,8 +65,8 @@ export default class DayTimeLine extends React.PureComponent<any, any> {
     const titleRowRightElementChildrenWidth = Array.prototype.reduce.call(
       titleRowRightElement.children[0].children,
       (width, element) => width + element.offsetWidth,
-      0,
-    )
+      0
+    );
     const titleRowRightWidth = Math.max(titleRowRightElementWidth, titleRowRightElementChildrenWidth);
     this.setState({
       mainViewHeight: mainViewElement.offsetHeight,
@@ -77,7 +78,17 @@ export default class DayTimeLine extends React.PureComponent<any, any> {
 
   render() {
     const { mainViewHeight, topEventRowHeight, titleRowRightWidth } = this.state;
-    const { startHHmm, endHHmm, step, formatString, timeSuffix, renderTitleRow, renderEventRow, renderMainView } = this.props;
+    const {
+      startHHmm,
+      endHHmm,
+      step,
+      formatString,
+      timeSuffix,
+      renderTitleRow,
+      renderClassifyRow,
+      renderEventRow,
+      renderMainView,
+    } = this.props;
     let dayTimeLine = getDayTimeLine(startHHmm, endHHmm, step, formatString);
     if (timeSuffix) {
       const [am = 'AM', pm = 'PM'] = timeSuffix;
@@ -90,11 +101,11 @@ export default class DayTimeLine extends React.PureComponent<any, any> {
     }
     const topEventRowHeightStyle = topEventRowHeight ? { height: topEventRowHeight } : {};
     const contentWidthStyle = titleRowRightWidth ? { width: titleRowRightWidth } : {};
-
     return (
       <div className="ic-day-time-line">
         <div className="ic-day-time-line__time-list">
           <div className="ic-day-time-line__title-row-left" />
+          {renderClassifyRow && <div style={{ height: 28, borderTop: '1px solid #ede4d6' }} />}
           <div className="ic-day-time-line__event-row-left" style={topEventRowHeightStyle} />
           <div>
             {dayTimeLine.map(time => (
@@ -106,7 +117,14 @@ export default class DayTimeLine extends React.PureComponent<any, any> {
         </div>
         <div className="ic-day-time-line__content-wrapper">
           <div className="ic-day-time-line__content" style={contentWidthStyle}>
-            <div ref={this.titleRowRightRef} className="ic-day-time-line__title-row-right">{renderTitleRow(titleRowRightWidth)}</div>
+            <div ref={this.titleRowRightRef} className="ic-day-time-line__title-row-right">
+              {renderTitleRow(titleRowRightWidth)}
+            </div>
+            {renderClassifyRow && (
+              <div ref={this.classifyRowRightRef} className="ic-day-time-line__classify-row-right">
+                {renderClassifyRow(titleRowRightWidth)}
+              </div>
+            )}
             <div ref={this.topEventRowRightRef} className="ic-day-time-line__event-row-right">
               {renderEventRow(titleRowRightWidth)}
             </div>

@@ -68,8 +68,11 @@ stories
       <Calendar events={mockEvents} defaultActiveTab="agenda" />
     </div>
   ))
-  .add('计划', () => (
+  .add('计划（PC 端）', () => (
     <div style={{ height: '100vh', padding: '20px 40px', background: '#f5f5f5', overflowY: 'auto' }}>
       <Calendar events={mockEvents} defaultActiveTab="plan" />
     </div>
-  ));
+  ))
+  .add('计划（移动 端）', () => <Calendar events={mockEvents} defaultActiveTab="plan" />, {
+    viewport: { defaultViewport: 'iphone5' },
+  });

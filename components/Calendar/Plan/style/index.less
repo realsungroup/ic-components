@@ -1,6 +1,6 @@
 .ic-plan {
   &__classify {
-    overflow: hidden;
+    overflow: auto;
 
     &-left {
       min-height: 28px;
@@ -14,7 +14,7 @@
     height: 28px;
     line-height: 28px;
     text-align: center;
-    border-bottom: solid 1px rgb(237, 228, 214);
+    border-top: solid 1px rgb(237, 228, 214);
   }
 
   &__classify-item:not(:last-child) {
@@ -22,10 +22,10 @@
   }
 
   &__single-classify-wrap {
+    height: 100%;
     position: absolute;
     left: 0;
     top: 0;
-    width: 100%;
   }
 
   &__single-classify {
