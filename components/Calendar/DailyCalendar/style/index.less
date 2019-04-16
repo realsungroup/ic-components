@@ -1,29 +1,12 @@
 .ic-daily-calendar {
-  &__top {
+  &__top-right {
+    height: 100%;
     display: flex;
-
-    &-left {
-      border-right: solid 1px rgb(237, 228, 214);
-    }
-
-    &-right {
-      flex-grow: 1;
-      height: 100%;
-    }
-  }
-
-  &__header {
-    height: 56px;
-    border-bottom: solid 1px rgb(237, 228, 214);
-
-    &-right {
-      height: 100%;
-      display: flex;
-    }
   }
 
   &__day-title {
     height: 100%;
+    min-width: 120px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -48,14 +31,10 @@
     }
   }
 
-  &__all-day-events {
-    border-bottom: solid 1px rgb(237, 228, 214);
-    display: flex;
-  }
-
   &__all-day-event-container {
     padding-top: 5px;
     padding-bottom: 25px;
+
     &:not(:last-child) {
       border-right: solid 1px rgb(237, 228, 214);
     }
