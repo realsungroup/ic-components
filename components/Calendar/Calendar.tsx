@@ -138,20 +138,34 @@ export default class Calendar extends React.PureComponent<any, any> {
       multiDays: defaultMultiDays,
       multiWeeks: defaultMultiWeeks,
       switchComponent: 'Tab', // 切换 “单日”、“多日” 等，使用的组件；'Tab' 表示使用 Tab 组件；'Dropdown' 表示使用下拉组件
+      viewsVisible: {
+        // 视图是否显示
+        singleDay: true,
+        multiDay: true,
+        singleWeek: true,
+        multiWeek: true,
+        month: true,
+        year: true,
+        agenda: true,
+        plan: true,
+      },
     };
   }
 
   componentDidMount = () => {
-    console.log('111');
     // 小于 768 px 时，使用下拉菜单组件；否则使用 Tab 组件
     enquire.register('screen and (max-width:768px)', {
       match: () => {
-        console.log('dropdown');
-        this.setState({ switchComponent: 'Dropdown' });
+        this.setState({
+          switchComponent: 'Dropdown',
+          viewsVisible: {
+            ...this.state.viewsVisible,
+            year: false,
+            plan: false,
+          },
+        });
       },
       unmatch: () => {
-        console.log('tab');
-
         this.setState({ switchComponent: 'Tab' });
       },
       // Keep a empty destory to avoid triggering unmatch when unregister
@@ -305,15 +319,30 @@ export default class Calendar extends React.PureComponent<any, any> {
       onDateRangeChange(dateRange);
     }
   };
-  menu = (
-    <div className="ic-calendar__dropdown-menu">
-      {tabs.map(tab => (
-        <div className="ic-calendar__dropdown-menu-item" key={tab.key} onClick={() => this.handleTabSwitch(tab.key)}>
-          {tab.label}
-        </div>
-      ))}
-    </div>
-  );
+
+  renderMenu = () => {
+    return (
+      <div className="ic-calendar__dropdown-menu">
+        {tabs
+          .map(tab => {
+            const visible = this.state.viewsVisible[tab.key];
+            console.log({ visible });
+            return (
+              visible && (
+                <div
+                  className="ic-calendar__dropdown-menu-item"
+                  key={tab.key}
+                  onClick={() => this.handleTabSwitch(tab.key)}
+                >
+                  {tab.label}
+                </div>
+              )
+            );
+          })
+          .filter(Boolean)}
+      </div>
+    );
+  };
 
   render() {
     const { events, singleWeekStartDay } = this.props;
@@ -359,7 +388,7 @@ export default class Calendar extends React.PureComponent<any, any> {
           {switchComponent === 'Tab' ? (
             <Tab onChange={this.handleTabSwitch} tabs={tabs} activeKey={activeTab} />
           ) : (
-            <Dropdown overlay={this.menu}>
+            <Dropdown overlay={this.renderMenu()}>
               <div className="ic-calendar__dropdown">{getTabLabelByKey(tabs, activeTab)}</div>
             </Dropdown>
           )}
