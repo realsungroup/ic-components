@@ -1,5 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
+import memoizeOne from 'memoize-one';
 import moment from 'moment';
 import { getDatesBetween, getWeekDayName, monthDayHasher } from '../../utils/dateUtil';
 import { allocateDailyEvents, isTotalDayEvent } from '../../utils/eventUtil';
@@ -21,25 +22,6 @@ export default class DailyCalendar extends React.PureComponent<any, any> {
   static defaultProps = {
     activeDate: new Date(),
   }
-
-  state = {
-    sideWidth: 0,
-    sideHeight: 0,
-    rootWidth: 0,
-  };
-
-  rootRef: any = React.createRef();
-
-  componentDidMount() {
-    this.setState({ rootWidth: this.rootRef.current.offsetWidth });
-  }
-
-  handleGetSideElement = element => {
-    this.setState({
-      sideWidth: element.offsetWidth,
-      sideHeight: element.offsetHeight,
-    });
-  };
 
   isFirstDayOfSection = (date: Date) => {
     const { startDate } = this.props;
@@ -63,73 +45,93 @@ export default class DailyCalendar extends React.PureComponent<any, any> {
     return end.diff(start, 'days');
   };
 
-  render() {
-    const { events, startDate, endDate, activeDate } = this.props;
-    const { sideWidth, sideHeight, rootWidth } = this.state;
-    const eventsMap = allocateDailyEvents(events);
-    const dates = getDatesBetween(startDate, endDate);
-    const datesLength = dates.length;
-    const topSideStyle = { width: sideWidth };
-    const singleDayWidth = Math.floor((rootWidth - sideWidth) / datesLength);
+  getSingleDayWidth = (containerWidth, days) => {
+    return Math.floor(containerWidth / days);
+  }
+
+  getTitleRowRenderer = memoizeOne((dates, activeDate) => containerWidth => {
+    const days = dates.length;
+    const singleDayWidth = this.getSingleDayWidth(containerWidth, days);
 
     return (
-      <div className="ic-daily-calendar" ref={this.rootRef}>
-        <div className="ic-daily-calendar__top ic-daily-calendar__header">
-          <div style={topSideStyle} className="ic-daily-calendar__top-left" />
-          <div className="ic-daily-calendar__top-right ic-daily-calendar__header-right">
-            {dates.map(date => (
-              <div
-                key={date.valueOf()}
-                className={classnames('ic-daily-calendar__day-title', {
-                  ['ic-daily-calendar__day-title-active']:
-                    datesLength > 1 && date.getDate() === (activeDate).getDate(),
-                })}
-                style={{ width: singleDayWidth }}
-              >
-                <div className="ic-daily-calendar__day-title-week">{getWeekDayName(date)}</div>
-                <div className="ic-daily-calendar__day-title-date">{`${date.getMonth() + 1}月${date.getDate()}日`}</div>
-              </div>
-            ))}
+      <div className="ic-daily-calendar__top-right">
+        {dates.map(date => (
+          <div
+            key={date.valueOf()}
+            className={classnames('ic-daily-calendar__day-title', {
+              ['ic-daily-calendar__day-title-active']:
+                days > 1 && date.getDate() === (activeDate).getDate(),
+            })}
+            style={{ width: singleDayWidth }}
+          >
+            <div className="ic-daily-calendar__day-title-week">{getWeekDayName(date)}</div>
+            <div className="ic-daily-calendar__day-title-date">{`${date.getMonth() + 1}月${date.getDate()}日`}</div>
           </div>
-        </div>
-        <div className="ic-daily-calendar__top">
-          <div style={topSideStyle} className="ic-daily-calendar__top-left" />
-          <div className="ic-daily-calendar__top-right ic-daily-calendar__all-day-events">
-            {dates.map(date => (
-              <div
-                key={date.valueOf()}
-                className="ic-daily-calendar__all-day-event-container"
-                style={{ width: singleDayWidth }}
-              >
-                <MonthDayView
-                  params={eventsMap}
-                  eventsFilter={allDayEventsFilter}
-                  date={date}
-                  dayElementWidth={singleDayWidth}
-                  dateVisible={false}
-                  dotVisible={false}
-                  eventsLimit={null}
-                  isFirstDayOfSection={this.isFirstDayOfSection}
-                  getDaysToLastDayOfSection={this.getDaysToLastDayOfSection}
-                  style={{ height: 'auto', width: singleDayWidth }}
-                />
-              </div>
-            ))}
+        ))}
+      </div>
+    );
+  });
+
+  getEventRowRenderer = memoizeOne((dates, events) => containerWidth => {
+    const eventsMap = allocateDailyEvents(events);
+    const singleDayWidth = this.getSingleDayWidth(containerWidth, dates.length);
+
+    return (
+      <div className="ic-daily-calendar__top-right">
+        {dates.map(date => (
+          <div
+            key={date.valueOf()}
+            className="ic-daily-calendar__all-day-event-container"
+            style={{ width: singleDayWidth }}
+          >
+            <MonthDayView
+              params={eventsMap}
+              eventsFilter={allDayEventsFilter}
+              date={date}
+              dayElementWidth={singleDayWidth}
+              dateVisible={false}
+              dotVisible={false}
+              eventsLimit={null}
+              isFirstDayOfSection={this.isFirstDayOfSection}
+              getDaysToLastDayOfSection={this.getDaysToLastDayOfSection}
+              style={{ height: 'auto', width: singleDayWidth }}
+            />
           </div>
-        </div>
-        <DayTimeLine onGetSideElement={this.handleGetSideElement}>
-          <ChildrenWithProps className="ic-daily-calendar__day-views">
-            {dates.map(date => (
-              <SingleDayView
-                key={date.valueOf()}
-                events={eventsMap.get(monthDayHasher(date))}
-                eventsFilter={notAllDayEventsFilter}
-                date={date}
-                style={{ width: singleDayWidth, height: sideHeight }}
-              />
-            ))}
-          </ChildrenWithProps>
-        </DayTimeLine>
+        ))}
+      </div>
+    );
+  });
+
+  getMainViewRenderer = memoizeOne((dates, events) => containerWidth => {
+    const eventsMap = allocateDailyEvents(events);
+    const singleDayWidth = this.getSingleDayWidth(containerWidth, dates.length);
+
+    return (
+      <ChildrenWithProps className="ic-daily-calendar__day-views">
+        {dates.map(date => (
+          <SingleDayView
+            key={date.valueOf()}
+            events={eventsMap.get(monthDayHasher(date))}
+            eventsFilter={notAllDayEventsFilter}
+            date={date}
+            style={{ width: singleDayWidth }}
+          />
+        ))}
+      </ChildrenWithProps>
+    );
+  });
+
+  render() {
+    const { events, startDate, endDate, activeDate } = this.props;
+    const dates = getDatesBetween(startDate, endDate);
+
+    return (
+      <div className="ic-daily-calendar">
+        <DayTimeLine
+          renderTitleRow={this.getTitleRowRenderer(dates, activeDate)}
+          renderEventRow={this.getEventRowRenderer(dates, events)}
+          renderMainView={this.getMainViewRenderer(dates, events)}
+        />
       </div>
     );
   }

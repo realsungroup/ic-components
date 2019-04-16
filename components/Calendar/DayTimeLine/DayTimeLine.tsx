@@ -44,22 +44,38 @@ export default class DayTimeLine extends React.PureComponent<any, any> {
   };
 
   state = {
-    bgHeight: undefined,
+    mainViewHeight: undefined,
+    topEventRowHeight: undefined,
+    titleRowRightWidth: undefined,
   };
 
-  bgRef: any = React.createRef();
-
-  sideRef: any = React.createRef();
+  mainViewRef: any = React.createRef();
+  topEventRowRightRef: any = React.createRef();
+  titleRowRightRef: any = React.createRef();
 
   componentDidMount() {
-    const { onGetSideElement } = this.props;
-    this.setState({ bgHeight: this.bgRef.current.offsetHeight });
-    typeof onGetSideElement === 'function' && onGetSideElement(this.sideRef.current);
+    const { onContentWidthChange } = this.props;
+    const {
+      mainViewRef: { current: mainViewElement },
+      topEventRowRightRef: { current: topEventRowRightElement },
+      titleRowRightRef: { current: titleRowRightElement },
+    } = this;
+    const titleRowRightWidth = Array.prototype.reduce.call(
+      titleRowRightElement.children[0].children,
+      (width, element) => width + element.offsetWidth,
+      0,
+    )
+    this.setState({
+      mainViewHeight: mainViewElement.offsetHeight,
+      topEventRowHeight: topEventRowRightElement.offsetHeight,
+      titleRowRightWidth,
+    });
+    typeof onContentWidthChange === 'function' && onContentWidthChange(titleRowRightWidth);
   }
 
   render() {
-    const { bgHeight } = this.state;
-    const { startHHmm, endHHmm, step, formatString, timeSuffix, children } = this.props;
+    const { mainViewHeight, topEventRowHeight, titleRowRightWidth } = this.state;
+    const { startHHmm, endHHmm, step, formatString, timeSuffix, renderTitleRow, renderEventRow, renderMainView } = this.props;
     let dayTimeLine = getDayTimeLine(startHHmm, endHHmm, step, formatString);
     if (timeSuffix) {
       const [am = 'AM', pm = 'PM'] = timeSuffix;
@@ -70,10 +86,14 @@ export default class DayTimeLine extends React.PureComponent<any, any> {
           .replace('中午', (_1, _2, s) => (Number(s.split(':')[0]) === 12 ? pm : am))
       );
     }
+    const topEventRowHeightStyle = topEventRowHeight ? { height: topEventRowHeight } : {};
+    const contentWidthStyle = titleRowRightWidth ? { width: titleRowRightWidth } : {};
 
     return (
       <div className="ic-day-time-line">
-        <div ref={this.sideRef} className="ic-day-time-line__time-list">
+        <div className="ic-day-time-line__time-list">
+          <div className="ic-day-time-line__title-row-left" />
+          <div className="ic-day-time-line__event-row-left" style={topEventRowHeightStyle} />
           <div>
             {dayTimeLine.map(time => (
               <div key={time} className="ic-day-time-line__label-row">
@@ -82,16 +102,24 @@ export default class DayTimeLine extends React.PureComponent<any, any> {
             ))}
           </div>
         </div>
-        <div ref={this.bgRef} className="ic-day-time-line__event-list">
-          <div className="ic-day-time-line__bg">
-            {dayTimeLine.map(time => (
-              <div key={time} className="ic-day-time-line__bg-row" />
-            ))}
+        <div className="ic-day-time-line__content-wrapper">
+          <div className="ic-day-time-line__content" style={contentWidthStyle}>
+            <div ref={this.titleRowRightRef} className="ic-day-time-line__title-row-right">{renderTitleRow(titleRowRightWidth)}</div>
+            <div ref={this.topEventRowRightRef} className="ic-day-time-line__event-row-right">
+              {renderEventRow(titleRowRightWidth)}
+            </div>
+            <div ref={this.mainViewRef} className="ic-day-time-line__main-view">
+              <div className="ic-day-time-line__bg">
+                {dayTimeLine.map(time => (
+                  <div key={time} className="ic-day-time-line__bg-row" />
+                ))}
+              </div>
+              {/* 渲染事件 */}
+              <ChildrenWithProps startHHmm={startHHmm} endHHmm={endHHmm} step={step} containerHeight={mainViewHeight}>
+                {renderMainView(titleRowRightWidth)}
+              </ChildrenWithProps>
+            </div>
           </div>
-          {/* 渲染事件 */}
-          <ChildrenWithProps startHHmm={startHHmm} endHHmm={endHHmm} step={step} containerHeight={bgHeight}>
-            {children}
-          </ChildrenWithProps>
         </div>
       </div>
     );
