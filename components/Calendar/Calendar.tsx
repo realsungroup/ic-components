@@ -189,7 +189,8 @@ export default class Calendar extends React.PureComponent<any, any> {
   getDateSwitchStep = activeTab => {
     switch (activeTab) {
     case 'agenda':
-      return this.agendaSwitchStep;
+      // return this.agendaSwitchStep;
+      return this.state.agendaDateRange;
     case 'plan':
       return this.planSwitchStep;
     default:
