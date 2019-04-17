@@ -161,7 +161,6 @@ export default class Calendar extends React.PureComponent<any, any> {
           viewsVisible: {
             ...this.state.viewsVisible,
             year: false,
-            plan: false,
           },
         });
       },
