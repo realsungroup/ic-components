@@ -60,17 +60,15 @@ export default function AgendaList(props) {
               const hasAttachment = event_attach && event_attach[1];
               return (
                 <div key={occurId} className="ic-agenda-list__event-card">
-                  <div className="ic-agenda-list__event-card-left">
-                    <div className="ic-agenda-list__event-time">
-                      {`${formatHHmmTime(event_time)} ~ ${formatHHmmTime(event_endtime)}`}
-                    </div>
-                    <div className="ic-agenda-list__event-title">{event_title}</div>
-                    <div className="ic-agenda-list__event-content">
-                      <div className="ic-agenda-list__event-short">{event_short}</div>
-                      {detailVisible && <div className="ic-agenda-list__event-detail">{event_desc}</div>}
-                    </div>
+                  <div className="ic-agenda-list__event-time">
+                    {`${formatHHmmTime(event_time)} ~ ${formatHHmmTime(event_endtime)}`}
                   </div>
-                  <div className="ic-agenda-list__event-card-right">
+                  <div className="ic-agenda-list__event-title">{event_title}</div>
+                  <div className="ic-agenda-list__event-content">
+                    <div className="ic-agenda-list__event-short">{event_short}</div>
+                    {detailVisible && <div className="ic-agenda-list__event-detail">{event_desc}</div>}
+                  </div>
+                  <div className="ic-agenda-list__event-ai-wrap">
                     {hasAttachment && (
                       <div className="ic-agenda-list__event-attachment">
                         <a className="ic-agenda__img" href={event_attach[1]} target="_blank">

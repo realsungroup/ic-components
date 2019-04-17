@@ -27,6 +27,9 @@
     align-items: center;
     justify-content: space-between;
     padding: 20px 30px 0;
+    @media screen and (max-width: 768px) {
+      padding: 20px 10px 0;
+    }
   }
 
   &__date-range {
@@ -96,6 +99,9 @@
         width: 34px;
         height: 34px;
       }
+      @media screen and (max-width: 768px) {
+        padding-right: 10px;
+      }
     }
 
     &__weather {
@@ -117,7 +123,7 @@
 
     &__day-title {
       background: rgb(210, 190, 165);
-      padding-left: 30px;
+      padding-left: 20px;
       padding-right: 44px;
       color: #fff;
       height: 36px;
@@ -145,29 +151,33 @@
 
     &__event-card {
       display: flex;
-      align-items: center;
+      flex-wrap: wrap;
       align-items: flex-start;
       justify-content: space-between;
       margin: 0 32px;
       padding: 12px 0;
       border-bottom: solid 1px rgba(230, 222, 206);
+      @media screen and (max-width: 768px) {
+        margin: 0 10px;
+      }
     }
 
     &__event-card-left {
       display: flex;
       align-items: center;
       align-items: flex-start;
-      width: 75%;
+      flex-wrap: wrap;
     }
 
-    &__event-card-right {
-      width: 25%;
+    &__event-ai-wrap {
+      width: 180px;
     }
 
     &__event-time {
       display: flex;
       align-items: center;
-      width: 30%;
+      // width: 30%;
+      width: 200px;
 
       &::before {
         content: '';
@@ -181,14 +191,14 @@
     }
 
     &__event-title {
-      width: 20%;
-      /* white-space: nowrap;
+      width: 130px;
+      white-space: nowrap;
       overflow: hidden;
-      text-overflow: ellipsis; */
+      text-overflow: ellipsis;
     }
 
     &__event-content {
-      width: 50%;
+      width: 300px;
     }
 
     &__event-short {
@@ -196,7 +206,6 @@
 
     &__event-detail {
       color: #d2bea5;
-      padding-left: 40px;
       margin-top: 12px;
     }
 
