@@ -121,12 +121,13 @@ export default class DailyCalendar extends React.PureComponent<any, any> {
   });
 
   render() {
-    const { events, startDate, endDate, activeDate } = this.props;
+    const { height, events, startDate, endDate, activeDate } = this.props;
     const dates = getDatesBetween(startDate, endDate);
 
     return (
       <div className="ic-daily-calendar">
         <DayTimeLine
+          height={height}
           renderTitleRow={this.getTitleRowRenderer(dates, activeDate)}
           renderEventRow={this.getEventRowRenderer(dates, events)}
           renderMainView={this.getMainViewRenderer(dates, events)}

@@ -1,4 +1,5 @@
 import React from 'react';
+import classnames from 'classnames';
 import { getDayTimeLine } from '../../utils/dateUtil';
 import ChildrenWithProps from '../../ChildrenWithProps';
 import PropTypes from 'prop-types';
@@ -100,6 +101,9 @@ export default class DayTimeLine extends React.PureComponent<any, any> {
       renderEventRow,
       renderMainView,
       titleRowHeight,
+      className,
+      style,
+      height,
     } = this.props;
     let dayTimeLine = getDayTimeLine(startHHmm, endHHmm, step, formatString);
     if (timeSuffix) {
@@ -116,7 +120,7 @@ export default class DayTimeLine extends React.PureComponent<any, any> {
     const verticalScrollableStyle = titleRowRightElement ? { height: `calc(100% - ${titleRowRightElement.offsetHeight})` } : {};
 
     return (
-      <div className="ic-day-time-line">
+      <div className={classnames('ic-day-time-line', className)} style={{ ...style, height, }}>
         <div className="ic-day-time-line__time-column">
           <div className="ic-day-time-line__title-row-left" style={{ height: titleRowHeight }} />
           <div

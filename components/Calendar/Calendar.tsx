@@ -113,7 +113,6 @@ export default class Calendar extends React.PureComponent<any, any> {
       defaultPlanSwitchStep,
       defaultMultiDays,
       defaultMultiWeeks,
-      maxMultiWeeks,
     } = props;
 
     const now = moment();
@@ -130,6 +129,7 @@ export default class Calendar extends React.PureComponent<any, any> {
     this.initVariables(props);
 
     this.state = {
+      contentViewHeight: undefined,
       datePickerDefaultValue: now,
       date: now.toDate(), // 原生 Date 对象，表示选中的某一天
       activeTab: defaultActiveTab,
@@ -171,19 +171,28 @@ export default class Calendar extends React.PureComponent<any, any> {
       // Keep a empty destory to avoid triggering unmatch when unregister
       destroy() {},
     });
+
+    let contentViewHeight = this.props.height
+    const {
+      headerRef: { current: headerElement },
+    } = this;
+    if (headerElement) {
+      const headerHeight = headerElement.offsetHeight;
+      contentViewHeight = contentViewHeight - headerHeight;
+    }
+    this.setState({ contentViewHeight })
   };
 
-  private agendaSwitchStep: string; // 议程切换步长
   private planSwitchStep: string; // 计划切换步长
   private multiWeeksOptions: number[];
+  private headerRef: any = React.createRef();
 
   initVariables = props => {
-    const { defaultAgendaDateRange, defaultPlanSwitchStep, maxMultiWeeks } = props;
+    const { defaultPlanSwitchStep, maxMultiWeeks } = props;
     this.multiWeeksOptions = [];
     for (let i = 1; i <= maxMultiWeeks; i++) {
       this.multiWeeksOptions.push(i);
     }
-    this.agendaSwitchStep = defaultAgendaDateRange;
     this.planSwitchStep = defaultPlanSwitchStep;
   };
 
@@ -203,7 +212,6 @@ export default class Calendar extends React.PureComponent<any, any> {
   getDateSwitchStep = activeTab => {
     switch (activeTab) {
     case 'agenda':
-      // return this.agendaSwitchStep;
       return this.state.agendaDateRange;
     case 'plan':
       return this.planSwitchStep;
@@ -346,7 +354,7 @@ export default class Calendar extends React.PureComponent<any, any> {
   };
 
   render() {
-    const { events, singleWeekStartDay } = this.props;
+    const { events, singleWeekStartDay, height } = this.props;
     const {
       date,
       datePickerDefaultValue,
@@ -356,6 +364,7 @@ export default class Calendar extends React.PureComponent<any, any> {
       multiDays,
       multiWeeks,
       switchComponent,
+      contentViewHeight,
     } = this.state;
     const [startDateOfMultiDay, endDateOfMultiDay] = getDateSectionOfMultiDay(date, multiDays);
     const weekDayOffset = -singleWeekStartDay;
@@ -363,8 +372,8 @@ export default class Calendar extends React.PureComponent<any, any> {
     const multiWeekDatesGroup = getMultiWeeks(date, multiWeeks);
 
     return (
-      <div className="ic-calendar">
-        <div className="ic-calendar__header">
+      <div style={{ height }} className="ic-calendar">
+        <div ref={this.headerRef} className="ic-calendar__header">
           <div className="ic-calendar__date-pickers">
             <DateSwitcher
               className="ic-calendar__date-switcher"
@@ -396,12 +405,16 @@ export default class Calendar extends React.PureComponent<any, any> {
         </div>
 
         {activeTab === 'singleDay' && (
-          <ViewContainer>
-            <DailyCalendar startDate={date} endDate={date} events={events} />
+          <ViewContainer height={contentViewHeight}>
+            <DailyCalendar
+              startDate={date}
+              endDate={date}
+              events={events}
+            />
           </ViewContainer>
         )}
         {activeTab === 'multiDay' && (
-          <ViewContainer>
+          <ViewContainer height={contentViewHeight}>
             <DailyCalendar
               activeDate={date}
               startDate={startDateOfMultiDay}
@@ -411,7 +424,7 @@ export default class Calendar extends React.PureComponent<any, any> {
           </ViewContainer>
         )}
         {activeTab === 'singleWeek' && (
-          <ViewContainer>
+          <ViewContainer height={contentViewHeight}>
             <DailyCalendar
               activeDate={date}
               startDate={startDateOfSingleWeek}
@@ -446,8 +459,11 @@ export default class Calendar extends React.PureComponent<any, any> {
           </ViewContainer>
         )}
         {activeTab === 'plan' && (
-          <ViewContainer>
-            <Plan selectedDate={date} events={this.getPlanEvents(events)} />
+          <ViewContainer height={contentViewHeight}>
+            <Plan
+              selectedDate={date}
+              events={this.getPlanEvents(events)}
+            />
           </ViewContainer>
         )}
       </div>

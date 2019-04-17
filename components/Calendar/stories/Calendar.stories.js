@@ -31,7 +31,7 @@ stories
   )
   .add('多日（PC 端）', () => (
     <div style={{ height: '100vh', padding: '20px 40px', background: '#f5f5f5', overflowY: 'auto' }}>
-      <Calendar events={mockEvents} defaultActiveTab="multiDay" />
+      <Calendar height={600} events={mockEvents} defaultActiveTab="multiDay" />
     </div>
   ))
   .add(
