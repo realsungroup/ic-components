@@ -47,12 +47,13 @@ export default class DayTimeLine extends React.PureComponent<any, any> {
     mainViewHeight: undefined,
     topEventRowHeight: undefined,
     titleRowRightWidth: undefined,
+    titleRowRightElement: undefined,
   };
 
   mainViewRef: any = React.createRef();
   topEventRowRightRef: any = React.createRef();
   titleRowRightRef: any = React.createRef();
-  classifyRowRightRef: any = React.createRef();
+  timeColumnRef: any = React.createRef();
 
   componentDidMount() {
     const { onContentWidthChange } = this.props;
@@ -72,12 +73,23 @@ export default class DayTimeLine extends React.PureComponent<any, any> {
       mainViewHeight: mainViewElement.offsetHeight,
       topEventRowHeight: topEventRowRightElement.offsetHeight,
       titleRowRightWidth,
+      titleRowRightElement,
     });
     typeof onContentWidthChange === 'function' && onContentWidthChange(titleRowRightWidth);
   }
 
+  handleContentScroll = (e) => {
+    const { current: timeColumnElement } = this.timeColumnRef;
+    timeColumnElement.scrollTop = e.target.scrollTop;
+  }
+
   render() {
-    const { mainViewHeight, topEventRowHeight, titleRowRightWidth } = this.state;
+    const {
+      mainViewHeight,
+      topEventRowHeight,
+      titleRowRightWidth,
+      titleRowRightElement,
+    } = this.state;
     const {
       startHHmm,
       endHHmm,
@@ -101,37 +113,51 @@ export default class DayTimeLine extends React.PureComponent<any, any> {
     }
     const topEventRowHeightStyle = topEventRowHeight ? { height: topEventRowHeight } : {};
     const contentWidthStyle = titleRowRightWidth ? { width: titleRowRightWidth } : {};
+    const verticalScrollableStyle = titleRowRightElement ? { height: `calc(100% - ${titleRowRightElement.offsetHeight})` } : {};
+
     return (
       <div className="ic-day-time-line">
-        <div className="ic-day-time-line__time-list">
+        <div className="ic-day-time-line__time-column">
           <div className="ic-day-time-line__title-row-left" style={{ height: titleRowHeight }} />
-          <div className="ic-day-time-line__event-row-left" style={topEventRowHeightStyle} />
-          <div>
-            {dayTimeLine.map(time => (
-              <div key={time} className="ic-day-time-line__label-row">
-                <div className="ic-day-time-line__label">{time}</div>
-              </div>
-            ))}
+          <div
+            ref={this.timeColumnRef}
+            className="ic-day-time-line__scrollable-time"
+            style={verticalScrollableStyle}
+          >
+            <div className="ic-day-time-line__event-row-left" style={topEventRowHeightStyle} />
+            <div>
+              {dayTimeLine.map(time => (
+                <div key={time} className="ic-day-time-line__label-row">
+                  <div className="ic-day-time-line__label">{time}</div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-        <div className="ic-day-time-line__content-wrapper">
+        <div className="ic-day-time-line__content-column">
           <div className="ic-day-time-line__content" style={contentWidthStyle}>
             <div ref={this.titleRowRightRef} className="ic-day-time-line__title-row-right" style={{ height: titleRowHeight }}>
               {renderTitleRow(titleRowRightWidth)}
             </div>
-            <div ref={this.topEventRowRightRef} className="ic-day-time-line__event-row-right">
-              {renderEventRow(titleRowRightWidth)}
-            </div>
-            <div ref={this.mainViewRef} className="ic-day-time-line__main-view">
-              <div className="ic-day-time-line__bg">
-                {dayTimeLine.map(time => (
-                  <div key={time} className="ic-day-time-line__bg-row" />
-                ))}
+            <div
+              className="ic-day-time-line__scrollable-content"
+              style={verticalScrollableStyle}
+              onScroll={this.handleContentScroll}
+            >
+              <div ref={this.topEventRowRightRef} className="ic-day-time-line__event-row-right">
+                {renderEventRow(titleRowRightWidth)}
               </div>
-              {/* 渲染事件 */}
-              <ChildrenWithProps startHHmm={startHHmm} endHHmm={endHHmm} step={step} containerHeight={mainViewHeight}>
-                {renderMainView(titleRowRightWidth)}
-              </ChildrenWithProps>
+              <div ref={this.mainViewRef} className="ic-day-time-line__main-view">
+                <div className="ic-day-time-line__bg">
+                  {dayTimeLine.map(time => (
+                    <div key={time} className="ic-day-time-line__bg-row" />
+                  ))}
+                </div>
+                {/* 渲染事件 */}
+                <ChildrenWithProps startHHmm={startHHmm} endHHmm={endHHmm} step={step} containerHeight={mainViewHeight}>
+                  {renderMainView(titleRowRightWidth)}
+                </ChildrenWithProps>
+              </div>
             </div>
           </div>
         </div>

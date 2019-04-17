@@ -110,7 +110,6 @@ export default class Plan extends React.PureComponent<any, any> {
 
   render() {
     const { events, selectedDate } = this.props;
-    const dates = getDatesBetween(selectedDate, selectedDate);
     return (
       <div className="ic-daily-calendar">
         <div className={classnames('ic-daily-calendar__day-title', 'ic-plan__title-row')}>
