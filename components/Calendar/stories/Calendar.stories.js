@@ -14,12 +14,25 @@ const DesktopWrap = ({ children }) => {
   );
 };
 
+class Wrap extends React.Component {
+  state = {
+    events: [],
+  };
+  render() {
+    const { events } = this.state;
+    console.log({ events });
+    return (
+      <div>
+        <button onClick={() => this.setState({ events: mockEvents })}>改变 events</button>
+
+        <Calendar events={events} defaultActiveTab="singleDay" />
+      </div>
+    );
+  }
+}
+
 stories
-  .add('单日（PC 端）', () => (
-    <DesktopWrap>
-      <Calendar events={mockEvents} defaultActiveTab="singleDay" />
-    </DesktopWrap>
-  ))
+  .add('单日（PC 端）', () => <Wrap />)
   .add(
     '单日（移动端）',
     () => (
