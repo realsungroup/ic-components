@@ -57,7 +57,10 @@ export default class DayTimeLine extends React.PureComponent<any, any> {
   timeColumnRef: any = React.createRef();
 
   componentDidMount() {
-    const { onContentWidthChange } = this.props;
+    this.updateStyle();
+  }
+
+  updateStyle() {
     const {
       mainViewRef: { current: mainViewElement },
       topEventRowRightRef: { current: topEventRowRightElement },
@@ -76,7 +79,6 @@ export default class DayTimeLine extends React.PureComponent<any, any> {
       titleRowRightWidth,
       titleRowRightElement,
     });
-    typeof onContentWidthChange === 'function' && onContentWidthChange(titleRowRightWidth);
   }
 
   handleContentScroll = (e) => {
@@ -117,7 +119,7 @@ export default class DayTimeLine extends React.PureComponent<any, any> {
     }
     const topEventRowHeightStyle = topEventRowHeight ? { height: topEventRowHeight } : {};
     const contentWidthStyle = titleRowRightWidth ? { width: titleRowRightWidth } : {};
-    const verticalScrollableStyle = titleRowRightElement ? { height: `calc(100% - ${titleRowRightElement.offsetHeight})` } : {};
+    const verticalScrollableStyle = titleRowRightElement ? { height: `calc(100% - ${titleRowRightElement.offsetHeight}px)` } : {};
 
     return (
       <div className={classnames('ic-day-time-line', className)} style={{ ...style, height, }}>

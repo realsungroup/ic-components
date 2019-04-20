@@ -17,6 +17,7 @@ const DesktopWrap = ({ children }) => {
 class Wrap extends React.Component {
   state = {
     events: [],
+    eventKeyword: undefined,
   };
   render() {
     const { events } = this.state;
@@ -25,7 +26,9 @@ class Wrap extends React.Component {
       <div>
         <button onClick={() => this.setState({ events: mockEvents })}>改变 events</button>
 
-        <Calendar events={events} defaultActiveTab="singleDay" />
+        <input onChange={(e) => this.setState({ eventKeyword: e.target.value })} />
+
+        <Calendar eventKeyword={this.state.eventKeyword} events={events} height={600} defaultActiveTab="singleDay" />
       </div>
     );
   }

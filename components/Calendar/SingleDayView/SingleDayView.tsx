@@ -1,6 +1,6 @@
 import React from 'react';
 import memoizeOne from 'memoize-one';
-import { getHHmmDurationByMinute } from '../../utils/dateUtil';
+import { getHHmmDurationByMinute, getStepDurationByMinute } from '../../utils/dateUtil';
 import { normalizeEvents } from '../../utils/eventUtil';
 import PropTypes from 'prop-types';
 
@@ -36,7 +36,9 @@ export default class SingleDayView extends React.PureComponent<any, any> {
       return;
     }
 
-    const totalMinutes = getHHmmDurationByMinute(endHHmm) - getHHmmDurationByMinute(startHHmm);
+    const timeLineStartMinutes = getHHmmDurationByMinute(startHHmm)
+    const timeLineEndMinutes = getHHmmDurationByMinute(endHHmm)
+    const totalMinutes = timeLineEndMinutes - timeLineStartMinutes;
     const heightToMinutes = containerHeight / totalMinutes;
     const eventElements = current.children;
 
@@ -46,8 +48,8 @@ export default class SingleDayView extends React.PureComponent<any, any> {
       const startMinutes = getHHmmDurationByMinute(eventStart);
       const endMinutes = getHHmmDurationByMinute(eventEnd);
       const eventTotalMinutes = endMinutes - startMinutes;
-      const elementTop = startMinutes * heightToMinutes * 0.9992;
-      const elementHeight = (eventTotalMinutes * containerHeight * 0.9992) / totalMinutes;
+      const elementTop = (startMinutes - timeLineStartMinutes) * heightToMinutes;
+      const elementHeight = (eventTotalMinutes * containerHeight) / totalMinutes;
 
       element.style.top = `${elementTop}px`;
       element.style.height = `${elementHeight}px`;

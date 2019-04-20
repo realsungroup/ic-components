@@ -1,5 +1,5 @@
 import memoizeOne from 'memoize-one';
-import { monthDayHasher } from './dateUtil';
+import { monthDayHasher, getHHmmDurationByMinute } from './dateUtil';
 
 export const compareEvents = (e1, e2) => e1.endTime - e2.startTime;
 
@@ -117,3 +117,20 @@ export const isTotalDayEvent = event => {
   const { event_time, event_endtime } = event.original;
   return event_time === '00:00' && event_endtime === '23:59';
 };
+
+export const getEventsTimeRange = memoizeOne((events: object[], defaultTimeRange: [string, string]) => {
+  let [start, end] = defaultTimeRange;
+
+  normalizeEvents(events)
+    .filter(event => !isTotalDayEvent(event))
+    .forEach(({ original: { event_time, event_endtime } }) => {
+    if (getHHmmDurationByMinute(event_time) < getHHmmDurationByMinute(start)) {
+      start = event_time;
+    }
+    if (getHHmmDurationByMinute(event_endtime) > getHHmmDurationByMinute(end)) {
+      end = event_endtime;
+    }
+  });
+
+  return [start, end];
+});

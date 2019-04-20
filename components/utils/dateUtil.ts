@@ -180,8 +180,7 @@ export const monthDayHasher = date => {
  * @param date1 {Date}
  * @returns {boolean}
  */
-export const isSameMonthDay = (date1: Date, date2: Date) =>
-  moment(date1).isSame(date2, 'day');
+export const isSameMonthDay = (date1: Date, date2: Date) => moment(date1).isSame(date2, 'day');
 
 /**
  * @param year {number} `YYYY`
@@ -203,7 +202,9 @@ export const getFirstDateOfMonth = (year, month) => new Date(year, month);
  * @returns {Date}
  */
 export const getLastDateOfMonth = (year, month) => {
-  return moment([year, month]).endOf('month').toDate();
+  return moment([year, month])
+    .endOf('month')
+    .toDate();
 };
 
 /**
@@ -219,7 +220,7 @@ const getFirstDateOfWeek = (date: Date, weekDayOffset = WEEK_DAY_OFFSET) => {
     .set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
     .subtract(daysToFirstWeekDate, 'd')
     .toDate();
-}
+};
 
 /**
  * @param startDate {Date}
@@ -252,12 +253,12 @@ export const getDateSectionOfMultiDay = memoizeOne(function(today: Date, days: n
   const leftDays = Math.floor(days / 2);
   const startDate = moment(today)
     .subtract(leftDays, 'd')
-    .set({ hour: 0, minute: 0, second: 0, millisecond: 0})
-    .toDate()
+    .set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+    .toDate();
   const endDate = moment(startDate)
     .add(days, 'd')
     .subtract(1, 'ms')
-    .toDate()
+    .toDate();
 
   return [startDate, endDate];
 });
@@ -270,7 +271,7 @@ export const getDateSectionOfSingleWeek = memoizeOne(function(date: Date, weekDa
       .add(1, 'w')
       .subtract(1, 'ms')
       .toDate(),
-  ]
+  ];
 });
 
 /**
@@ -346,19 +347,21 @@ const groupDatesByWeek = (dates: [Date]) => {
     weeks[weekIndex].push(date);
   });
   return weeks;
-}
+};
 
 /**
  * @param date {Date} date in first week
  * @param weeks {number}
  * @returns [[Date]]
  */
-export const getMultiWeeks = memoizeOne((function(date: Date, weeks: number, weekDayOffset = WEEK_DAY_OFFSET) {
+export const getMultiWeeks = memoizeOne(function(date: Date, weeks: number, weekDayOffset = WEEK_DAY_OFFSET) {
   const firstDateOfFirstWeek = getFirstDateOfWeek(date, weekDayOffset);
-  const lastDateOfLastWeek = moment(firstDateOfFirstWeek).add(weeks - 1, 'w').endOf('week');
+  const lastDateOfLastWeek = moment(firstDateOfFirstWeek)
+    .add(weeks - 1, 'w')
+    .endOf('week');
   const dates = getDatesBetween(firstDateOfFirstWeek, lastDateOfLastWeek);
   return groupDatesByWeek(dates);
-}));
+});
 
 /**
  * @param year {number}
@@ -403,7 +406,7 @@ export const getDayTimeLine = memoizeOne(function(start, end, step, formatString
   const startMoment = moment([2019, 0, 1, Number(startHour), Number(startMinute)]);
   const endMoment = moment([2019, 0, 1, Number(endHour), Number(endMinute)]);
   const timeLine = [];
-  for (let endMomentValue = endMoment.toDate().valueOf(); startMoment.toDate().valueOf() <= endMomentValue; ) {
+  for (let endMomentValue = endMoment.toDate().valueOf(); startMoment.toDate().valueOf() < endMomentValue; ) {
     timeLine.push(startMoment.format(formatString));
     startMoment.add(stepValue, stepUnit);
   }
@@ -415,10 +418,7 @@ export const getDatesOfYearCalendar = memoizeOne(year => {
   let maxDaysOfMonth = 0;
 
   for (let month = 0; month < 12; month++) {
-    const datesOfMonthCalendar = [
-      ...getDatesOfPreviousMonthLastWeek(year, month),
-      ...getDatesOfMonth(year, month),
-    ];
+    const datesOfMonthCalendar = [...getDatesOfPreviousMonthLastWeek(year, month), ...getDatesOfMonth(year, month)];
     const dateInMonth = datesOfMonthCalendar[10];
     for (let d = 0; d < 7; d++) {
       if (datesOfMonthCalendar[d].getMonth() === dateInMonth.getMonth()) {

@@ -4,6 +4,7 @@ import moment from 'moment';
 import 'moment/locale/zh-cn';
 import { Select, Dropdown } from 'antd';
 import { getDateSectionOfMultiDay, getDateSectionOfSingleWeek, getMultiWeeks, parseStep } from '../utils/dateUtil';
+import { normalizeEvents, isTotalDayEvent } from '../utils/eventUtil';
 import Tab from './Tab';
 import DatePicker from './DatePicker';
 import DateSwitcher from './DateSwitcher';
@@ -35,6 +36,7 @@ const dateSwitchSteps = {
   multiWeek: '4:w',
   month: '1:M',
   year: '1:y',
+  plan: '1:d',
 };
 
 function getTabLabelByKey(tabs, key) {
@@ -43,9 +45,10 @@ function getTabLabelByKey(tabs, key) {
 
 export default class Calendar extends React.PureComponent<any, any> {
   static propTypes = {
+    // --- 通用
     /**
      * 日历事件
-     * 默认：-
+     * 默认值：-
      */
     events: PropTypes.array.isRequired,
 
@@ -63,70 +66,111 @@ export default class Calendar extends React.PureComponent<any, any> {
       'agenda',
       'plan',
     ]),
+
+    /**
+     * 组件的高度
+     * 默认值：-
+     */
+    height: PropTypes.number,
+
+    /**
+     * 事件过滤关键字
+     * 默认值：-
+     */
+    eventKeyword: PropTypes.string,
+
+    /**
+     * 时间范围变化事件
+     * 函数签名：onDateRangeChange(startDate: Date, endDate: Date): void
+     * 默认值：-
+     */
+    onDateRangeChange: PropTypes.func,
+    // --- //
+
+    // --- 单日、多日、单周、计划视图
+    /**
+     * 时间轴范围
+     * 默认值：['08:00', '18:00']
+     */
+    defaultDayTimeLineRange: PropTypes.arrayOf(PropTypes.string),
+    // --- //
+
+    // --- 单日视图
+    // --- //
+
+    // --- 多日视图
     /**
      * 默认多日天数
      * 默认值：3
      */
     defaultMultiDays: PropTypes.number,
+    // --- //
+
+    // --- 单周视图
+    /**
+     * 单周视图一周开始日，0 表示周日
+     * 默认值：1
+     */
+    singleWeekStartDay: PropTypes.oneOf([0, 1, 2, 3, 4, 5, 6]),
+    // --- //
+
+    // --- 多周
+    /**
+     * 默认多周周数
+     * 默认值：4
+     */
+    defaultMultiWeeks: PropTypes.number,
 
     /**
-     * 议程中默认日期范围值
+     * 多周周数上限
+     * 默认值：10
+     */
+    maxMultiWeeks: PropTypes.number,
+    // --- //
+
+    // --- 月视图
+    // --- //
+
+    // --- 年视图
+    // --- //
+
+    // --- 议程视图
+    /**
+     * 议程默认日期范围
      * 默认值：'1:M'
      */
     defaultAgendaDateRange: PropTypes.oneOf(['1:d', '1:w', '2:w', '1:M', '2:M', '3:M', '6:M', '1:y']),
+    // --- //
 
-    /**
-     * 计划中默认的步长
-     * 默认：'1:d'
-     */
-    defaultPlanSwitchStep: PropTypes.oneOf(['1:d']),
+    // --- 计划视图
+    // --- //
   };
 
   static defaultProps = {
     defaultActiveTab: 'month',
+    defaultDayTimeLineRange: ['08:00', '18:00'],
+    singleWeekStartDay: 1,
     defaultMultiDays: 3,
     defaultMultiWeeks: 4,
     maxMultiWeeks: 10,
     defaultAgendaDateRange: '1:M',
-    onDateRangeChange: dateRange => {
-      // console.log(dateRange);
-    }, // mock
-    singleWeekStartDay: 1,
-  };
-
-  switchSteps: {
-    singleDay: string;
-    multiDay: string;
-    singleWeek: string;
-    multiWeek: string;
-    month: string;
-    year: string;
-    agenda: string;
   };
 
   constructor(props) {
     super(props);
 
-    const {
-      defaultActiveTab,
-      defaultAgendaDateRange,
-      defaultPlanSwitchStep,
-      defaultMultiDays,
-      defaultMultiWeeks,
-    } = props;
+    const { defaultActiveTab, defaultAgendaDateRange, defaultMultiDays, defaultMultiWeeks, maxMultiWeeks } = props;
+
+    this.multiWeeksOptions = Array.from({ length: maxMultiWeeks }, (_, index) => index + 1);
 
     const now = moment();
 
     let dateSwitchStep;
     if (defaultActiveTab === 'agenda') {
       dateSwitchStep = defaultAgendaDateRange;
-    } else if (defaultActiveTab === 'plan') {
-      dateSwitchStep = defaultPlanSwitchStep;
     } else {
       dateSwitchStep = this.getDateSwitchStep(defaultActiveTab);
     }
-
-    this.initVariables(props);
 
     this.state = {
       contentViewHeight: undefined,
@@ -171,7 +215,7 @@ export default class Calendar extends React.PureComponent<any, any> {
       destroy() {},
     });
 
-    let contentViewHeight = this.props.height
+    let contentViewHeight = this.props.height;
     const {
       headerRef: { current: headerElement },
     } = this;
@@ -179,47 +223,22 @@ export default class Calendar extends React.PureComponent<any, any> {
       const headerHeight = headerElement.offsetHeight;
       contentViewHeight = contentViewHeight - headerHeight;
     }
-    this.setState({ contentViewHeight })
+    this.setState({ contentViewHeight });
   };
 
-  private planSwitchStep: string; // 计划切换步长
   private multiWeeksOptions: number[];
   private headerRef: any = React.createRef();
-
-  initVariables = props => {
-    const { defaultPlanSwitchStep, maxMultiWeeks } = props;
-    this.multiWeeksOptions = [];
-    for (let i = 1; i <= maxMultiWeeks; i++) {
-      this.multiWeeksOptions.push(i);
-    }
-    this.planSwitchStep = defaultPlanSwitchStep;
-  };
-
-  getPlanEvents = events => {
-    let retEvents = [];
-    events.forEach(event => {
-      const index = retEvents.findIndex(item => item.type === event.category_name);
-      if (index !== -1) {
-        retEvents[index].events.push(event);
-      } else {
-        retEvents.push({ type: event.category_name, events: [event] });
-      }
-    });
-    return retEvents;
-  };
 
   getDateSwitchStep = activeTab => {
     switch (activeTab) {
     case 'agenda':
       return this.state.agendaDateRange;
-    case 'plan':
-      return this.planSwitchStep;
     default:
       return dateSwitchSteps[activeTab] || '1:M';
     }
   };
 
-  getDateRange = activeTab => {
+  getDateRange = (activeTab: string) => {
     const { date } = this.state;
     switch (activeTab) {
     case 'agenda': {
@@ -235,7 +254,8 @@ export default class Calendar extends React.PureComponent<any, any> {
         .subtract(1, 'ms');
       return [start.toDate(), end.toDate()];
     }
-    case 'singleDay': {
+    case 'singleDay':
+    case 'plan': {
       const dayStartDate = new Date(date);
       dayStartDate.setHours(0, 0, 0, 0);
       const dayEndDate = new Date(date);
@@ -275,6 +295,35 @@ export default class Calendar extends React.PureComponent<any, any> {
     }
     }
   };
+
+  getEvents() {
+    const { activeTab } = this.state;
+    const { eventKeyword, events } = this.props;
+    const [rangeStart, rangeEnd] = this.getDateRange(activeTab);
+    const eventsInDateRange = normalizeEvents(events)
+      .filter(event => {
+        const { startTime, endTime } = event;
+        return isTotalDayEvent(event) || (startTime >= rangeStart && endTime <= rangeEnd);
+      })
+
+    if (!eventKeyword) {
+      return eventsInDateRange;
+    }
+
+    return eventsInDateRange.filter((event) => {
+      const { original: originalEvent } = event;
+      for(let field in originalEvent) {
+        if (originalEvent.hasOwnProperty(field)) {
+          const fieldValue = originalEvent[field];
+          const result = typeof fieldValue === 'string' && fieldValue.includes(eventKeyword);
+          if (result) {
+            return result;
+          }
+        }
+      }
+      return false
+    })
+  }
 
   handleDateChange = value => {
     if (value) {
@@ -353,7 +402,11 @@ export default class Calendar extends React.PureComponent<any, any> {
   };
 
   render() {
-    const { events, singleWeekStartDay, height } = this.props;
+    const {
+      singleWeekStartDay,
+      height,
+      defaultDayTimeLineRange,
+    } = this.props;
     const {
       date,
       datePickerDefaultValue,
@@ -369,6 +422,7 @@ export default class Calendar extends React.PureComponent<any, any> {
     const weekDayOffset = -singleWeekStartDay;
     const [startDateOfSingleWeek, endDateOfSingleWeek] = getDateSectionOfSingleWeek(date, weekDayOffset);
     const multiWeekDatesGroup = getMultiWeeks(date, multiWeeks);
+    const events = this.getEvents();
 
     return (
       <div style={{ height }} className="ic-calendar">
@@ -405,16 +459,13 @@ export default class Calendar extends React.PureComponent<any, any> {
 
         {activeTab === 'singleDay' && (
           <ViewContainer height={contentViewHeight}>
-            <DailyCalendar
-              startDate={date}
-              endDate={date}
-              events={events}
-            />
+            <DailyCalendar timeLineRange={defaultDayTimeLineRange} startDate={date} endDate={date} events={events} />
           </ViewContainer>
         )}
         {activeTab === 'multiDay' && (
           <ViewContainer height={contentViewHeight}>
             <DailyCalendar
+              timeLineRange={defaultDayTimeLineRange}
               activeDate={date}
               startDate={startDateOfMultiDay}
               endDate={endDateOfMultiDay}
@@ -425,6 +476,7 @@ export default class Calendar extends React.PureComponent<any, any> {
         {activeTab === 'singleWeek' && (
           <ViewContainer height={contentViewHeight}>
             <DailyCalendar
+              timeLineRange={defaultDayTimeLineRange}
               activeDate={date}
               startDate={startDateOfSingleWeek}
               endDate={endDateOfSingleWeek}
@@ -459,10 +511,7 @@ export default class Calendar extends React.PureComponent<any, any> {
         )}
         {activeTab === 'plan' && (
           <ViewContainer height={contentViewHeight}>
-            <Plan
-              selectedDate={date}
-              events={this.getPlanEvents(events)}
-            />
+            <Plan height={contentViewHeight} timeLineRange={defaultDayTimeLineRange} selectedDate={date} events={events} />
           </ViewContainer>
         )}
       </div>

@@ -3,7 +3,7 @@ import classnames from 'classnames';
 import memoizeOne from 'memoize-one';
 import moment from 'moment';
 import { getDatesBetween, getWeekDayName, monthDayHasher } from '../../utils/dateUtil';
-import { allocateDailyEvents, isTotalDayEvent } from '../../utils/eventUtil';
+import { allocateDailyEvents, isTotalDayEvent, getEventsTimeRange } from '../../utils/eventUtil';
 import ChildrenWithProps from '../../ChildrenWithProps';
 import DayTimeLine from '../DayTimeLine';
 import SingleDayView from '../SingleDayView';
@@ -22,6 +22,17 @@ export default class DailyCalendar extends React.PureComponent<any, any> {
   static defaultProps = {
     activeDate: new Date(),
   };
+
+  state = {
+    timeLineRefreshKey: false,
+  }
+
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    const { events, startDate, endDate } = this.props;
+    if (events !== nextProps.events || startDate !== nextProps.startDate || endDate !== nextProps.endDate) {
+      this.setState(({ timeLineRefreshKey}) => ({ timeLineRefreshKey: !timeLineRefreshKey }));
+    }
+  }
 
   isFirstDayOfSection = (date: Date) => {
     const { startDate } = this.props;
@@ -120,14 +131,19 @@ export default class DailyCalendar extends React.PureComponent<any, any> {
     );
   });
 
+
   render() {
-    const { height, events, startDate, endDate, activeDate } = this.props;
+    const { events, startDate, endDate, activeDate, timeLineRange } = this.props;
+    const { timeLineRefreshKey } = this.state;
     const dates = getDatesBetween(startDate, endDate);
+    const [startHHmm, endHHmm] = getEventsTimeRange(events, timeLineRange);
 
     return (
       <div className="ic-daily-calendar">
         <DayTimeLine
-          height={height}
+          key={`${timeLineRefreshKey}`}
+          startHHmm={startHHmm}
+          endHHmm={endHHmm}
           renderTitleRow={this.getTitleRowRenderer(dates, activeDate)}
           renderEventRow={this.getEventRowRenderer(dates, events)}
           renderMainView={this.getMainViewRenderer(dates, events)}
