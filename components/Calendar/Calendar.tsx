@@ -29,6 +29,32 @@ const tabs = [
   { key: 'plan', label: '计划' },
 ];
 
+function getTabLabelByKey(tabs, key) {
+  return tabs.find(tab => tab.key === key).label;
+}
+
+class TabSwitcher {
+  _tabKeys: string[];
+  _tabCounts: number;
+  _currentIndex: number;
+
+  constructor(currentKey) {
+    this._tabKeys = tabs.map(({ key }) => key);
+    this._tabCounts = tabs.length;
+    this._currentIndex = this._tabKeys.indexOf(currentKey);
+  }
+
+  nextKey() {
+    this._currentIndex = (this._currentIndex + 1) % this._tabCounts;
+    return this._tabKeys[this._currentIndex];
+  }
+
+  previousKey() {
+    this._currentIndex = (this._currentIndex - 1 + this._tabCounts) % this._tabCounts;
+    return this._tabKeys[this._currentIndex];
+  }
+}
+
 const dateSwitchSteps = {
   singleDay: '1:d',
   multiDay: '3:d',
@@ -38,10 +64,6 @@ const dateSwitchSteps = {
   year: '1:y',
   plan: '1:d',
 };
-
-function getTabLabelByKey(tabs, key) {
-  return tabs.find(tab => tab.key === key).label;
-}
 
 export default class Calendar extends React.PureComponent<any, any> {
   static propTypes = {
@@ -156,12 +178,18 @@ export default class Calendar extends React.PureComponent<any, any> {
     defaultAgendaDateRange: '1:M',
   };
 
+  private multiWeeksOptions: number[];
+  private headerRef: any = React.createRef();
+  private tabSwitcher: TabSwitcher;
+  private panning: boolean = false;
+
   constructor(props) {
     super(props);
 
     const { defaultActiveTab, defaultAgendaDateRange, defaultMultiDays, defaultMultiWeeks, maxMultiWeeks } = props;
 
     this.multiWeeksOptions = Array.from({ length: maxMultiWeeks }, (_, index) => index + 1);
+    this.tabSwitcher = new TabSwitcher(defaultActiveTab);
 
     const now = moment();
 
@@ -225,9 +253,6 @@ export default class Calendar extends React.PureComponent<any, any> {
     }
     this.setState({ contentViewHeight });
   };
-
-  private multiWeeksOptions: number[];
-  private headerRef: any = React.createRef();
 
   getDateSwitchStep = activeTab => {
     switch (activeTab) {
@@ -377,6 +402,24 @@ export default class Calendar extends React.PureComponent<any, any> {
     }
   };
 
+  handlePan = e => {
+    if (this.panning) {
+      return;
+    }
+
+    this.panning = true;
+    const { additionalEvent } = e;
+    let { activeTab } = this.state;
+    if (additionalEvent === 'panleft') {
+      activeTab = this.tabSwitcher.nextKey();
+    } else if (additionalEvent === 'panright') {
+      activeTab = this.tabSwitcher.previousKey();
+    }
+    this.setState({ activeTab }, () => {
+      setTimeout(() => { this.panning = false; }, 800);
+    });
+  }
+
   renderMenu = () => {
     return (
       <div className="ic-calendar__dropdown-menu">
@@ -411,7 +454,6 @@ export default class Calendar extends React.PureComponent<any, any> {
       date,
       datePickerDefaultValue,
       activeTab,
-      dateSwitchStep,
       agendaDateRange,
       multiDays,
       multiWeeks,
@@ -430,7 +472,7 @@ export default class Calendar extends React.PureComponent<any, any> {
           <div className="ic-calendar__date-pickers">
             <DateSwitcher
               className="ic-calendar__date-switcher"
-              step={dateSwitchStep}
+              step={this.getDateSwitchStep(activeTab)}
               value={date}
               onChange={this.handleDateSwitch}
             />
@@ -458,12 +500,12 @@ export default class Calendar extends React.PureComponent<any, any> {
         </div>
 
         {activeTab === 'singleDay' && (
-          <ViewContainer height={contentViewHeight}>
+          <ViewContainer height={contentViewHeight} onPan={this.handlePan}>
             <DailyCalendar timeLineRange={defaultDayTimeLineRange} startDate={date} endDate={date} events={events} />
           </ViewContainer>
         )}
         {activeTab === 'multiDay' && (
-          <ViewContainer height={contentViewHeight}>
+          <ViewContainer height={contentViewHeight} onPan={this.handlePan}>
             <DailyCalendar
               timeLineRange={defaultDayTimeLineRange}
               activeDate={date}
@@ -474,7 +516,7 @@ export default class Calendar extends React.PureComponent<any, any> {
           </ViewContainer>
         )}
         {activeTab === 'singleWeek' && (
-          <ViewContainer height={contentViewHeight}>
+          <ViewContainer height={contentViewHeight} onPan={this.handlePan}>
             <DailyCalendar
               timeLineRange={defaultDayTimeLineRange}
               activeDate={date}
@@ -485,22 +527,22 @@ export default class Calendar extends React.PureComponent<any, any> {
           </ViewContainer>
         )}
         {activeTab === 'multiWeek' && (
-          <ViewContainer>
+          <ViewContainer onPan={this.handlePan}>
             <MonthlyCalendar grayDayOfOtherMonths={false} weeks={multiWeekDatesGroup} date={date} events={events} />
           </ViewContainer>
         )}
         {activeTab === 'month' && (
-          <ViewContainer>
+          <ViewContainer onPan={this.handlePan}>
             <MonthlyCalendar date={date} events={events} />
           </ViewContainer>
         )}
         {activeTab === 'year' && (
-          <ViewContainer>
+          <ViewContainer onPan={this.handlePan}>
             <YearCalendar date={date} events={events} />
           </ViewContainer>
         )}
         {activeTab === 'agenda' && (
-          <ViewContainer>
+          <ViewContainer onPan={this.handlePan}>
             <Agenda
               startDate={date}
               dateRange={agendaDateRange}
@@ -510,7 +552,7 @@ export default class Calendar extends React.PureComponent<any, any> {
           </ViewContainer>
         )}
         {activeTab === 'plan' && (
-          <ViewContainer height={contentViewHeight}>
+          <ViewContainer height={contentViewHeight} onPan={this.handlePan}>
             <Plan height={contentViewHeight} timeLineRange={defaultDayTimeLineRange} selectedDate={date} events={events} />
           </ViewContainer>
         )}
