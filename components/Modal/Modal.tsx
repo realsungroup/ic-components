@@ -36,6 +36,12 @@ export default class Modal extends React.Component<any, any> {
      * 默认：-
      */
     height: PropTypes.number,
+
+    /**
+     * 层级
+     * 默认：-
+     */
+    zIndex: PropTypes.number,
   };
 
   static defaultProps = {
@@ -45,13 +51,12 @@ export default class Modal extends React.Component<any, any> {
   state = {};
 
   handleClose = () => {
-    console.log(222);
     const { onClose } = this.props;
     onClose && onClose();
   };
 
   render() {
-    const { children, visible, header, width, height, ...restProps } = this.props;
+    const { children, visible, header, width, height, zIndex, ...restProps } = this.props;
 
     const classes = classNames('ic-modal', {
       'ic-modal--hide': !visible,
@@ -67,10 +72,17 @@ export default class Modal extends React.Component<any, any> {
 
     const otherProps = omit(restProps, ['onClose']);
 
+    let style = {};
+    if (zIndex) {
+      style = {
+        zIndex,
+      };
+    }
+
     const element = (
-      <div className={classes}>
+      <div className={classes} {...style}>
         <div className="ic-modal__mask" onClick={this.handleClose} />
-        <div className="ic-modal__main" {...mainStyle}>
+        <div className="ic-modal__main" style={{ ...mainStyle }}>
           <div className="ic-modal__header">
             <div className="ic-modal__header-content">{header}</div>
             <Icon type="close" className="ic-modal__close" onClick={this.handleClose} />

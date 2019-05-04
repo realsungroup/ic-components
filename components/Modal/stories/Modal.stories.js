@@ -8,11 +8,10 @@ import './stories.less';
 
 class ModalTest extends React.Component {
   state = {
-    visible: true,
+    visible: false,
   };
 
   handleClose = () => {
-    console.log('111');
     this.setState({ visible: false });
   };
 
