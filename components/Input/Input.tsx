@@ -9,8 +9,21 @@ interface InputProps {
 
 export default class Input extends React.Component<InputProps & any, any> {
   static propTypes = {
+    /**
+     * 类型
+     * 默认：'text'
+     */
     type: PropTypes.string,
+    /**
+     * 是否禁用
+     * 默认：false
+     */
     disabled: PropTypes.bool,
+
+    /**
+     * 后缀
+     * 默认：-
+     */
     suffix: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   };
 

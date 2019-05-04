@@ -9,8 +9,6 @@ import { withKnobs, text, boolean, number } from '@storybook/addon-knobs';
 import Input from '../';
 import '../style/index.less';
 
-const eventsFromNames = actions('onChange');
-
 class InputTest extends React.Component {
   state = {
     value: 'hello input',
@@ -21,7 +19,7 @@ class InputTest extends React.Component {
 
   render() {
     const { value } = this.state;
-    return <Input placeholder="输入框" value={text('value', value)} {...eventsFromNames} />;
+    return <Input placeholder="输入框" value={value} onChange={this.handleChange} />;
   }
 }
 
@@ -32,4 +30,4 @@ stories.addDecorator(withKnobs);
 stories
   .addDecorator(centered)
   .addDecorator(withInfo)
-  .add('输入框', () => <Input value={text('value', '123')} />, { notes: 'A very simple example of addon notes' });
+  .add('输入框', () => <InputTest />);
