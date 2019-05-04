@@ -1,7 +1,10 @@
 import React from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import omit from 'omit.js';
+import AntdIcon from '@ant-design/icons-react';
+import { CloseOutline } from 'ic-icons';
+
+AntdIcon.add(CloseOutline);
 
 export default class Icon extends React.Component<any, any> {
   static propTypes = {
@@ -14,21 +17,26 @@ export default class Icon extends React.Component<any, any> {
     /**
      * 字体图标大小
      * 必填：否
-     * 默认：14
      */
     size: PropTypes.number,
   };
 
-  static defaultProps = {
-    size: 14,
-  };
+  static defaultProps = {};
 
   render() {
-    const { type, size } = this.props;
+    const { type, size, className, ...restProps } = this.props;
 
-    const classes = `icon-icon iconfont icon-${type}`;
-    const style = { fontSize: size };
+    const classes = classNames('ic-icon', className);
 
-    return <span className={classes} style={style} />;
+    const iconType = `${type}-o`;
+
+    let style = {};
+    if (size) {
+      style = {
+        size,
+      };
+    }
+
+    return <AntdIcon type={iconType} className={classes} {...style} {...restProps} />;
   }
 }
