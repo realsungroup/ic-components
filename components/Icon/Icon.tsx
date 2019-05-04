@@ -2,9 +2,9 @@ import React from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import AntdIcon from '@ant-design/icons-react';
-import { CloseOutline } from 'ic-icons';
+import { CloseOutline, SearchOutline } from 'ic-icons';
 
-AntdIcon.add(CloseOutline);
+AntdIcon.add(CloseOutline, SearchOutline);
 
 export default class Icon extends React.Component<any, any> {
   static propTypes = {
