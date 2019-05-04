@@ -1,0 +1,43 @@
+@import '../../style/index.less';
+.ic-modal {
+  &--hide {
+    display: none;
+  }
+  &__mask {
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.2);
+  }
+  &__main {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    min-width: 350px;
+    min-height: 200px;
+    border-radius: 8px;
+  }
+  &__header {
+    height: 64px;
+    line-height: 32px;
+    padding: 16px;
+    background-color: #f1f2f4;
+    border-radius: 8px 8px 0 0;
+    font-weight: bold;
+    position: relative;
+  }
+  &__content {
+    padding: 16px;
+    overflow: auto;
+  }
+  &__close {
+    cursor: pointer;
+    position: absolute;
+    right: 16px;
+    top: 24px;
+  }
+}
