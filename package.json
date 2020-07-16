@@ -10,7 +10,7 @@
     "hammerjs": "^2.0.8",
     "ic-components": "^0.1.0",
     "less": "^3.9.0",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.19",
     "memoize-one": "^5.0.2",
     "moment": "^2.24.0",
     "omit.js": "^1.0.1",
